@@ -37,5 +37,5 @@ max-line-length = 88
 exclude = ["migrations", "env"]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.6.1"]
 build-backend = "poetry.core.masonry.api"
