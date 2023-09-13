@@ -23,6 +23,15 @@ pytest-cov = "^4.1.0"
 pytest-django = "^4.5.2"
 pre-commit = "^3.4.0"
 
+[tool.black]
+line-length = 88
+
+[tool.isort]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
