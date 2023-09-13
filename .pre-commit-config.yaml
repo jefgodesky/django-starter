@@ -11,9 +11,17 @@ repos:
         name: black
         entry: poetry run black
         language: system
+        args: [--line-length=80]
         types: [file, python]
       - id: isort
         name: isort
         entry: poetry run isort
         language: system
+        args: [--line-length=80]
         types: [ file, python ]
+      - id: flake8
+        name: flake8
+        entry: poetry run flake8
+        language: system
+        args: [--max-line-length=88]
+        types: [file, python]
