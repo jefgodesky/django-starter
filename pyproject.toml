@@ -25,12 +25,15 @@ pre-commit = "^3.4.0"
 
 [tool.black]
 line-length = 88
+exclude = ["migrations", "env"]
 
 [tool.isort]
 line-length = 88
+exclude = ["migrations", "env"]
 
 [tool.flake8]
 max-line-length = 88
+exclude = ["migrations", "env"]
 
 [build-system]
 requires = ["poetry-core"]
