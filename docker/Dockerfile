@@ -1,0 +1,44 @@
+ARG PYTHON_VERSION=3.11.5
+ARG POETRY_VERSION=1.6.1
+ARG SECRET_KEY=your_secret_key_here
+ARG DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1 [::1]"
+
+ARG SQL_DEV_DB=myproject_dev_db
+ARG SQL_DEV_USER=django_db_user
+ARG SQL_DEV_PASS=password
+ARG SQL_DEV_HOST=myproject-dev-db
+ARG SQL_DEV_PORT=5432
+
+### STAGING
+
+# pull official base image
+FROM python:$PYTHON_VERSION-alpine AS staging
+ARG POETRY_VERSION
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONFAULTHANDLER 1
+ENV POETRY_HOME /home/ops/poetry
+ENV POETRY_VERSION $POETRY_VERSION
+ENV POETRY_VIRTUALENVS_IN_PROJECT true
+ENV POETRY_NO_INTERACTION 1
+
+# install linux dependencies
+RUN apk update && apk upgrade && \
+  apk add --no-cache gcc g++ musl-dev curl libffi-dev postgresql-dev zlib-dev jpeg-dev freetype-dev
+
+# create and run as non-root user
+RUN adduser --disabled-password ops
+WORKDIR /home/ops
+
+# install poetry to manage python dependencies
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# import site
+COPY ./docker/entrypoint.sh ./entrypoint.sh
+COPY ./src ./src
+
+# use non-root user
+RUN chown -R ops:ops /home/ops
+USER ops
