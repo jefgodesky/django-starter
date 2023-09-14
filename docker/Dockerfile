@@ -6,8 +6,14 @@ ARG DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1 [::1]"
 ARG SQL_DEV_DB=myproject_dev_db
 ARG SQL_DEV_USER=django_db_user
 ARG SQL_DEV_PASS=password
-ARG SQL_DEV_HOST=myproject-dev-db
+ARG SQL_DEV_HOST=myproject-db
 ARG SQL_DEV_PORT=5432
+
+ARG SQL_TEST_DB=myproject_test_db
+ARG SQL_TEST_USER=django_db_user
+ARG SQL_TEST_PASS=password
+ARG SQL_TEST_HOST=myproject-db
+ARG SQL_TEST_PORT=5432
 
 ### STAGING
 
@@ -80,7 +86,53 @@ WORKDIR /home/ops/src
 
 # install dependencies
 ENV PATH="${PATH}:/home/ops/poetry/bin"
-RUN poetry install
+RUN poetry install --no-root
 
 # run entrypoint
 ENTRYPOINT ["../entrypoint.sh"]
+
+
+### TEST
+
+FROM staging AS test
+ARG POETRY_VERSION
+ARG SECRET_KEY
+ARG DJANGO_ALLOWED_HOSTS
+ARG SQL_TEST_DB
+ARG SQL_TEST_USER
+ARG SQL_TEST_PASS
+ARG SQL_TEST_HOST
+ARG SQL_TEST_PORT
+
+# set environment variables
+ENV DEBUG 1
+ENV SECRET_KEY $SECRET_KEY
+ENV DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS
+ENV SQL_ENGINE=django.db.backends.postgresql
+ENV SQL_DATABASE=$SQL_TEST_DB
+ENV SQL_USER=$SQL_TEST_USER
+ENV SQL_PASSWORD=$SQL_TEST_PASS
+ENV SQL_HOST=$SQL_TEST_HOST
+ENV SQL_PORT=$SQL_TEST_PORT
+ENV DATABASE=postgres
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONFAULTHANDLER 1
+ENV POETRY_HOME /home/ops/poetry
+ENV POETRY_VERSION $POETRY_VERSION
+ENV POETRY_VIRTUALENVS_IN_PROJECT true
+ENV POETRY_NO_INTERACTION 1
+
+# set working directory
+WORKDIR /home/ops/src
+
+# install dependencies
+ENV PATH="${PATH}:/home/ops/poetry/bin"
+RUN poetry install --no-root
+
+# run entrypoint
+RUN poetry run black .
+RUN poetry run isort .
+RUN poetry run flake8 .
+RUN poetry run pytest
+RUN poetry run pytest --cov=.
