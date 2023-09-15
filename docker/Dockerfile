@@ -136,3 +136,16 @@ RUN poetry run isort .
 RUN poetry run flake8 .
 RUN poetry run pytest
 RUN poetry run pytest --cov=.
+
+
+### BUILD
+
+FROM staging AS build
+
+# set working directory
+WORKDIR /home/ops/src
+
+# create wheels
+ENV PATH="${PATH}:/home/ops/poetry/bin"
+RUN poetry build --format wheel
+RUN poetry export --format requirements.txt --output constraints.txt --without-hashes
