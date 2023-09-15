@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "My starting point for new Django projects."
 authors = ["Jason Godesky <jefgodesky@gmail.com>"]
 license = "BSD-3-Clause"
-readme = "README.md"
+readme = "../README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"

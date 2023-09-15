@@ -51,6 +51,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # import site
 COPY ./docker/entrypoint.sh ./entrypoint.sh
+COPY ./README.md ./README.md
 COPY ./src ./src
 
 # use non-root user
@@ -156,7 +157,7 @@ WORKDIR /home/ops/src
 # create wheels
 ENV PATH="${PATH}:/home/ops/poetry/bin"
 RUN poetry build --format wheel
-RUN poetry export --format requirements.txt --output constraints.txt --without-hashes
+RUN poetry export --format constraints.txt --output constraints.txt --without-hashes
 
 
 ### PRODUCTION
