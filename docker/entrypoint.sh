@@ -11,7 +11,9 @@ then
   echo "PostgreSQL started"
 fi
 
-python ./src/manage.py flush --no-input
-python ./src/manage.py migrate
+if [ "$DEBUG" = "1" ]; then
+  poetry run python manage.py flush --no-input
+  poetry run python manage.py migrate
+fi
 
 exec "$@"

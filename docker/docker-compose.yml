@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16.0-alpine
+    environment:
+      POSTGRES_DB: myproject_db
+      POSTGRES_USER: django_db_user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data:delegated
+
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: dev
+      args:
+        SITENAME: django_starter
+        SECRET_KEY: your_secret_key_here
+        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
+        SQL_DEV_DB: myproject_dev_db
+    environment:
+      SQL_HOST: db
+      SQL_PORT: 5432
+    command: poetry run python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8002:8000"
+    depends_on:
+      - db
+
+  test:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: test
+      args:
+        SITENAME: django_starter
+        SECRET_KEY: your_secret_key_here
+        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
+        SQL_TEST_DB: myproject_test_db
+    environment:
+      SQL_HOST: db
+      SQL_PORT: 5432
+    command: poetry run pytest
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+
+  prod:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: prod
+      args:
+        SITENAME: django_starter
+        SECRET_KEY: your_secret_key_here
+        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
+        SQL_PROD_DB: myproject_db
+    environment:
+      SQL_HOST: db
+      SQL_PORT: 5432
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
