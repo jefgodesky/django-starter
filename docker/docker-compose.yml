@@ -15,14 +15,11 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       target: dev
-      args:
-        SITENAME: django_starter
-        SECRET_KEY: your_secret_key_here
-        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
-        SQL_DEV_DB: myproject_dev_db
     environment:
       SQL_HOST: db
       SQL_PORT: 5432
+    env_file:
+      - .env.dev
     command: poetry run python manage.py runserver 0.0.0.0:8000
     ports:
       - "8002:8000"
@@ -34,14 +31,11 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       target: test
-      args:
-        SITENAME: django_starter
-        SECRET_KEY: your_secret_key_here
-        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
-        SQL_TEST_DB: myproject_test_db
     environment:
       SQL_HOST: db
       SQL_PORT: 5432
+    env_file:
+      - .env.test
     command: poetry run pytest
     ports:
       - "8001:8000"
@@ -53,14 +47,11 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       target: prod
-      args:
-        SITENAME: django_starter
-        SECRET_KEY: your_secret_key_here
-        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
-        SQL_PROD_DB: myproject_db
     environment:
       SQL_HOST: db
       SQL_PORT: 5432
+    env_file:
+      - .env.prod
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
