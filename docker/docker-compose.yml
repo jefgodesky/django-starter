@@ -43,15 +43,12 @@ services:
       - db
 
   prod:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-      target: prod
+    image: registry.digitalocean.com/droplet-name/repo-name:latest
     environment:
       SQL_HOST: db
       SQL_PORT: 5432
     env_file:
-      - .env.prod
+      - /home/deployer/.env.prod
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
