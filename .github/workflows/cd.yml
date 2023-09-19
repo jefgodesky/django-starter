@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 env:
-  DROPLET: DROPLET
-  REPO: REPO
-  DROPLET_USER: DROPLET_USER
+  DROPLET: "{{ droplet }}"
+  REPO: "{{ repo }}"
+  DROPLET_USER: "{{ droplet_user }}"
   DEPLOY_DIR: /home/${{ env.DROPLET_USER }}
 
 jobs:
