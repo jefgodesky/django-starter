@@ -169,7 +169,11 @@ def print_conclusion(project: str):
       python manage.py migrate
       python manage.py runserver
 
-      ...to see your site up and running."""
+      ...to see your site up and running.
+
+      For other next steps, visit:
+
+      https://github.com/jefgodesky/django-starter"""
     print_bold(title)
     print(cleandoc(intro))
 
