@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from inspect import cleandoc
@@ -156,6 +157,23 @@ def change_cd_workflow(filename: str, droplet: str, repo: str, droplet_user: str
         file.write(workflow)
 
 
+def print_conclusion(project: str):
+    os.system("clear")
+    title = f"{project} is ready!"
+    intro = """If you want to use a custom user model, now’s the time to write your
+      first, most basic test for that. If not, you can run:
+
+      cd src
+      poetry shell
+      python manage.py makemigrations
+      python manage.py migrate
+      python manage.py runserver
+
+      ...to see your site up and running."""
+    print_bold(title)
+    print(cleandoc(intro))
+
+
 def main():
     print_intro()
     project = get_project()
@@ -167,6 +185,7 @@ def main():
     exempt_long_lines(settings)
     change_settings(settings)
     change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, user)
+    print_conclusion(project)
 
 
 if __name__ == "__main__":
