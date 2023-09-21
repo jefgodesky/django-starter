@@ -3,6 +3,8 @@ import re
 import subprocess
 from inspect import cleandoc
 
+from django.core.management.utils import get_random_secret_key
+
 
 def print_bold(msg: str):
     print("\033[1m" + msg + "\033[0m")
@@ -48,12 +50,33 @@ def get_repo():
     return prompt(cleandoc(msg), prompt_text)
 
 
-def get_user():
+def get_deployer():
     msg = """You’ll want to create a non-root user on your DigitalOcean droplet
       who has all the permissions it needs to deploy your Docker containers.
       This should be an account separate from any human user, one dedicated entirely
       to automated, continuous delivery. What is this user’s user name?"""
-    prompt_text = "Username: "
+    prompt_text = "Deployment username: "
+    return prompt(cleandoc(msg), prompt_text)
+
+
+def get_database(env: str):
+    msg_before = "What is the name of the database that you would like to use in your "
+    msg = f"{msg_before} {env} environment?"
+    prompt_text = f"{env.capitalize()} database: "
+    return prompt(cleandoc(msg), prompt_text)
+
+
+def get_database_user(env: str):
+    msg_before = "What is the name of the database user for your "
+    msg = f"{msg_before} {env} environment database?"
+    prompt_text = f"{env.capitalize()} database user: "
+    return prompt(cleandoc(msg), prompt_text)
+
+
+def get_database_password(env: str):
+    msg_before = "What is the password for the database user for your "
+    msg = f"{msg_before} {env} environment database?"
+    prompt_text = f"{env.capitalize()} database user password: "
     return prompt(cleandoc(msg), prompt_text)
 
 
@@ -157,6 +180,28 @@ def change_cd_workflow(filename: str, droplet: str, repo: str, droplet_user: str
         file.write(workflow)
 
 
+def make_env(env: str, db: str, db_user: str, db_password: str):
+    with open("docker/.env.example") as example:
+        settings = example.read()
+
+    debug = 1 if env == "prod" else 0
+    secret_key = get_random_secret_key()
+
+    replacements = [
+        ("DEBUG=1", f"DEBUG={debug}"),
+        ("SECRET_KEY=your_secret_key_here", f"SECRET_KEY={secret_key}"),
+        ("SQL_DATABASE=myproject_db", f"SQL_DATABASE={db}"),
+        ("SQL_USER=django_db_user", f"SQL_USER={db_user}"),
+        ("SQL_PASSWORD=password", f"SQL_PASSWORD={db_password}"),
+    ]
+
+    for pattern, replacement in replacements:
+        settings = settings.replace(pattern, replacement)
+
+    with open(f"docker/.env.{env}", "w") as file:
+        file.write(settings)
+
+
 def print_conclusion(project: str):
     os.system("clear")
     title = f"{project} is ready!"
@@ -183,12 +228,28 @@ def main():
     project = get_project()
     droplet = get_droplet()
     repo = get_repo()
-    user = get_user()
+    deployer = get_deployer()
+
+    dev_db = get_database("development")
+    dev_db_user = get_database("development")
+    dev_db_password = get_database_password("development")
+
+    test_db = get_database("testing")
+    test_db_user = get_database("testing")
+    test_db_password = get_database_password("testing")
+
+    prod_db = get_database("production")
+    prod_db_user = get_database("production")
+    prod_db_password = get_database_password("production")
+
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
     exempt_long_lines(settings)
     change_settings(settings)
-    change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, user)
+    change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, deployer)
+    make_env("dev", dev_db, dev_db_user, dev_db_password)
+    make_env("test", test_db, test_db_user, test_db_password)
+    make_env("prod", prod_db, prod_db_user, prod_db_password)
     print_conclusion(project)
 
 
