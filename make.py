@@ -192,6 +192,23 @@ def change_dockerfile(project: str):
         file.write(dockerfile)
 
 
+def change_docker_compose(db: str, user: str, password: str):
+    with open("docker/docker-compose.yml") as file:
+        yml = file.read()
+
+    replacements = [
+        ("POSTGRES_DB: myproject_db", f"POSTGRES_DB: {db}"),
+        ("POSTGRES_USER: django_db_user", f"POSTGRES_USER: {user}"),
+        ("POSTGRES_PASSWORD: password", f"POSTGRES_PASSWORD: {password}"),
+    ]
+
+    for pattern, replacement in replacements:
+        yml = yml.replace(pattern, replacement)
+
+    with open("docker/docker-compose.yml", "w") as file:
+        file.write(yml)
+
+
 def make_env(env: str, db: str, db_user: str, db_password: str):
     with open("docker/.env.example") as example:
         settings = example.read()
@@ -260,6 +277,7 @@ def main():
     change_settings(settings)
     change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, deployer)
     change_dockerfile(project)
+    change_docker_compose(dev_db, dev_db_user, dev_db_password)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
     make_env("prod", prod_db, prod_db_user, prod_db_password)
