@@ -243,15 +243,15 @@ def main():
     deployer = get_deployer()
 
     dev_db = get_database("development")
-    dev_db_user = get_database("development")
+    dev_db_user = get_database_user("development")
     dev_db_password = get_database_password("development")
 
     test_db = get_database("testing")
-    test_db_user = get_database("testing")
+    test_db_user = get_database_user("testing")
     test_db_password = get_database_password("testing")
 
     prod_db = get_database("production")
-    prod_db_user = get_database("production")
+    prod_db_user = get_database_user("production")
     prod_db_password = get_database_password("production")
 
     settings = f"./src/{project}/settings.py"
