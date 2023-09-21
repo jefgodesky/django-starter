@@ -180,6 +180,18 @@ def change_cd_workflow(filename: str, droplet: str, repo: str, droplet_user: str
         file.write(workflow)
 
 
+def change_dockerfile(project: str):
+    with open("docker/Dockerfile") as file:
+        dockerfile = file.read()
+
+    dockerfile = dockerfile.replace(
+        'ARG SITENAME="django_starter"', f'ARG SITENAME="{project}"'
+    )
+
+    with open("docker/Dockerfile", "w") as file:
+        file.write(dockerfile)
+
+
 def make_env(env: str, db: str, db_user: str, db_password: str):
     with open("docker/.env.example") as example:
         settings = example.read()
@@ -247,6 +259,7 @@ def main():
     exempt_long_lines(settings)
     change_settings(settings)
     change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, deployer)
+    change_dockerfile(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
     make_env("prod", prod_db, prod_db_user, prod_db_password)
