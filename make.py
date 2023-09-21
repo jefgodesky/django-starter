@@ -252,6 +252,23 @@ def print_conclusion(project: str):
     print(cleandoc(intro))
 
 
+def change_readme(project: str):
+    tdd_link = "https://testdriven.io/test-driven-development/"
+    cd_link = "https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment"  # noqa: E501
+    api_link = "https://www.postman.com/api-first/"
+    pe_link = "https://medium.com/bitsrc/a-practical-guide-to-progressive-enhancement-in-2023-52c740c3aff3"  # noqa: E501
+    dj_link = "https://www.djangoproject.com/"
+    tdd = f"[test-driven]({tdd_link})"
+    cd = f"[continuously deployed]({cd_link})"
+    api_first = f"[API-first]({api_link})"
+    pe = f"[progressively enhanced]({pe_link})"
+    dj = f"[Django]({dj_link})"
+    content = f"# {project}\n\nThis is a {tdd}, {cd}, {api_first}, {pe} {dj} project."
+
+    with open("README.md", "w") as file:
+        file.write(content)
+
+
 def main():
     print_intro()
     project = get_project()
@@ -278,6 +295,7 @@ def main():
     change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, deployer)
     change_dockerfile(project)
     change_docker_compose(dev_db, dev_db_user, dev_db_password)
+    change_readme(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
     make_env("prod", prod_db, prod_db_user, prod_db_password)
