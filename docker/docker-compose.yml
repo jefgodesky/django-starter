@@ -19,7 +19,7 @@ services:
       SQL_HOST: db
       SQL_PORT: 5432
     env_file:
-      - .env.dev
+      - docker/.env.dev
     command: poetry run python manage.py runserver 0.0.0.0:8000
     ports:
       - "8002:8000"
@@ -35,7 +35,7 @@ services:
       SQL_HOST: db
       SQL_PORT: 5432
     env_file:
-      - .env.test
+      - docker/.env.test
     command: poetry run pytest
     ports:
       - "8001:8000"
