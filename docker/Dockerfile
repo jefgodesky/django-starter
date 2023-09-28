@@ -50,6 +50,7 @@ WORKDIR /home/ops/src
 
 # install dependencies
 ENV PATH="${PATH}:/home/ops/poetry/bin"
+RUN poetry config virtualenvs.inherit true
 RUN poetry install --no-root
 
 # run entrypoint
@@ -74,6 +75,7 @@ ENV PATH="${PATH}:/home/ops/poetry/bin"
 RUN poetry install --no-root
 
 # run entrypoint
+RUN poetry config virtualenvs.inherit true
 RUN poetry run black .
 RUN poetry run isort .
 RUN poetry run flake8 .
