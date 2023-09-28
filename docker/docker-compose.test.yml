@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:16.0-alpine
     env_file:
-      - docker/.env.test
+      - .env.test
     volumes:
       - db-data:/var/lib/postgresql/data:delegated
 
@@ -17,7 +17,7 @@ services:
       SQL_HOST: db
       SQL_PORT: 5432
     env_file:
-      - docker/.env.test
+      - .env.test
     command: poetry run pytest
     ports:
       - "8001:8000"

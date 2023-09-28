@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:16.0-alpine
     env_file:
-      - docker/.env.dev
+      - .env.dev
     volumes:
       - db-data:/var/lib/postgresql/data:delegated
 
@@ -17,7 +17,7 @@ services:
       SQL_HOST: db
       SQL_PORT: 5432
     env_file:
-      - docker/.env.dev
+      - .env.dev
     command: poetry run python manage.py runserver 0.0.0.0:8000
     ports:
       - "8002:8000"
