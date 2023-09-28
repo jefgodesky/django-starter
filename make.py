@@ -1,4 +1,3 @@
-import os
 import re
 import subprocess
 from inspect import cleandoc
@@ -231,27 +230,6 @@ def make_env(env: str, db: str, db_user: str, db_password: str):
         file.write(settings)
 
 
-def print_conclusion(project: str):
-    os.system("clear")
-    title = f"{project} is ready!"
-    intro = """If you want to use a custom user model, now’s the time to write your
-      first, most basic test for that. If not, you can run:
-
-      cd src
-      poetry shell
-      python manage.py makemigrations
-      python manage.py migrate
-      python manage.py runserver
-
-      ...to see your site up and running.
-
-      For other next steps, visit:
-
-      https://github.com/jefgodesky/django-starter"""
-    print_bold(title)
-    print(cleandoc(intro))
-
-
 def change_readme(project: str):
     tdd_link = "https://testdriven.io/test-driven-development/"
     cd_link = "https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment"  # noqa: E501
@@ -299,7 +277,6 @@ def main():
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
     make_env("prod", prod_db, prod_db_user, prod_db_password)
-    print_conclusion(project)
 
 
 if __name__ == "__main__":
