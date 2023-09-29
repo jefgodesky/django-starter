@@ -80,7 +80,7 @@ def get_database_password(env: str):
 
 
 def create_django_project(project: str):
-    subprocess.run(["django-admin", "startproject", project, "src"])
+    subprocess.run(["django-admin", "startproject", project, "."], cwd="src")
 
 
 def exempt_long_lines(filename: str):
