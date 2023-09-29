@@ -12,8 +12,8 @@ then
 fi
 
 if [ "$DEBUG" = "1" ]; then
-  poetry run python manage.py flush --no-input
-  poetry run python manage.py migrate
+  python manage.py flush --no-input
+  python manage.py migrate
 fi
 
 exec "$@"

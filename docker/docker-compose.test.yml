@@ -18,7 +18,7 @@ services:
       SQL_PORT: 5432
     env_file:
       - .env.test
-    command: poetry run pytest
+    command: pytest
     ports:
       - "8001:8000"
     depends_on:
