@@ -18,7 +18,7 @@ services:
       SQL_PORT: 5432
     env_file:
       - .env.dev
-    command: python manage.py runserver 0.0.0.0:8000
+    command: tail -f /dev/null
     ports:
       - "8002:8000"
     depends_on:
