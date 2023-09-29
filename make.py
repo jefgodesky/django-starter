@@ -195,7 +195,8 @@ def make_env(env: str, db: str, db_user: str, db_password: str):
     with open("docker/.env.example") as example:
         settings = example.read()
 
-    debug = 1 if env == "prod" else 0
+    debug_environments = ["dev", "test"]
+    debug = 1 if env in debug_environments else 0
     secret_key = get_random_secret_key()
 
     replacements = [
