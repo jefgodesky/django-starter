@@ -8,6 +8,6 @@ clear
 python make.py
 exit
 clear
-rm -Rf env
+rm -Rf src/env
 rm -f make.py
 rm -- "$0"
