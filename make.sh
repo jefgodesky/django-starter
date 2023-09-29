@@ -1,12 +1,7 @@
 #!/bin/bash
-
-poetry install
-clear
-poetry run python make.py
 cd src
-poetry install
-cd ..
+pip install -r requirements.dev.txt
+clear
+python make.py
 rm -f make.py
-rm -f pyproject.toml
-rm -f poetry.lock
 rm -- "$0"
