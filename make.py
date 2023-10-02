@@ -183,13 +183,19 @@ def change_dockerfile(project: str):
         file.write(dockerfile)
 
 
-def change_compose_prod(repo: str):
+def change_compose_prod(repo: str, deployer: str):
     filename = "docker/docker-compose.prod.yml"
 
     with open(filename) as file:
         compose = file.read()
 
-    compose = compose.replace("image: ghcr.io/REPO:main", f"image: ghcr.io/{repo}:main")
+    replacements = [
+        ("image: ghcr.io/REPO:main", f"image: ghcr.io/{repo}:main"),
+        ("- /home/deployer/.env.prod", f"- /home/{deployer}/.env.prod"),
+    ]
+
+    for pattern, replacement in replacements:
+        compose = compose.replace(pattern, replacement)
 
     with open(filename, "w") as file:
         file.write(compose)
@@ -273,7 +279,7 @@ def main():
     change_settings(settings)
     change_cd_workflow("./.github/workflows/cd.yml", project, deployer)
     change_dockerfile(project)
-    change_compose_prod(repo)
+    change_compose_prod(repo, deployer)
     change_readme(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
