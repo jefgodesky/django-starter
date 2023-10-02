@@ -6,41 +6,64 @@ on:
   workflow_dispatch:
 
 env:
-  DROPLET: "{{ droplet }}"
-  REPO: "{{ repo }}"
-  DROPLET_USER: "{{ droplet_user }}"
-  DEPLOY_DIR: /home/${{ env.DROPLET_USER }}
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.repository }}
+  DROPLET_USER: DEPLOYER_USERNAME
+  DEPLOY_DIR: /home/DEPLOYER_USERNAME
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Log into ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY}}/${{ env.IMAGE }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: registry.digitalocean.com/${{ env.DROPLET }}/${{ env.REPO }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
       - name: Copy docker-compose.yml to Droplet
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ env.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          source: "./docker/docker-compose.yml"
-          target: "${{ env.DEPLOY_DIR }}/docker-compose.yml"
+          source: "docker/docker-compose.prod.yml"
+          target: ${{ env.DEPLOY_DIR }}
+          timeout: 120s
       - name: SSH Deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -48,5 +71,5 @@ jobs:
           username: ${{ env.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            docker pull registry.digitalocean.com/${{ env.DROPLET }}/${{ env.REPO }}:latest
-            docker-compose -f ${{ env.DEPLOY_DIR }}/docker-compose.yml up -d
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE }}:main
+            docker-compose -f ${{ env.DEPLOY_DIR }}/docker/docker-compose.prod.yml -p PROJECT up -d
