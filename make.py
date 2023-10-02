@@ -3,6 +3,7 @@ import subprocess
 from inspect import cleandoc
 
 from django.core.management.utils import get_random_secret_key
+from git import Repo
 
 
 def print_bold(msg: str):
@@ -27,26 +28,16 @@ def prompt(msg: str, prompt_text: str):
     return input(prompt_text)
 
 
-def get_project():
+def get_project(default_value: str):
     msg = "What would you like to call your project?"
-    prompt_text = "Project name: "
-    return prompt(msg, prompt_text)
+    prompt_text = f"Project name ({default_value}): "
+    return prompt(msg, prompt_text) or default_value
 
 
-def get_droplet():
-    msg = """What’s the name of your DigitalOcean droplet (used to locate
-      your Docker images in the DigitalOcean Container Registry; e.g.,
-      registry.digitalocean.com/DROPLET)?"""
-    prompt_text = "Droplet name: "
-    return prompt(cleandoc(msg), prompt_text)
-
-
-def get_repo():
-    msg = """What’s the name of your repository (also used to locate your
-      Docker images in the DigitalOcean Container Registry, e.g.,
-      registry.digitalocean.com/DROPLET/REPO)?"""
-    prompt_text = "Repository name: "
-    return prompt(cleandoc(msg), prompt_text)
+def get_repo(default_value: str):
+    msg = "What is the name of your Github repository?"
+    prompt_text = f"Repository ({default_value}): "
+    return prompt(msg, prompt_text) or default_value
 
 
 def get_deployer():
@@ -162,14 +153,13 @@ if not DEBUG:
         file.write(settings)
 
 
-def change_cd_workflow(filename: str, droplet: str, repo: str, droplet_user: str):
+def change_cd_workflow(filename: str, project: str, droplet_user: str):
     with open(filename) as file:
         workflow = file.read()
 
     replacements = [
-        ('"{{ droplet }}"', droplet),
-        ('"{{ repo }}"', repo),
-        ('"{{ droplet_user }}"', droplet_user),
+        ("PROJECT", project),
+        ("DEPLOYER_USERNAME", droplet_user),
     ]
 
     for pattern, replacement in replacements:
@@ -189,6 +179,18 @@ def change_dockerfile(project: str):
 
     with open("docker/Dockerfile", "w") as file:
         file.write(dockerfile)
+
+
+def change_compose_prod(repo: str):
+    filename = "docker/docker-compose.prod.yml"
+
+    with open(filename) as file:
+        compose = file.read()
+
+    compose = compose.replace("image: ghcr.io/REPO:main", f"image: ghcr.io/{repo}:main")
+
+    with open(filename, "w") as file:
+        file.write(compose)
 
 
 def make_env(env: str, db: str, db_user: str, db_password: str):
@@ -235,10 +237,15 @@ def change_readme(project: str):
 
 
 def main():
+    repo = Repo.init(".")
+    elements = repo.remotes.origin.url.split(".git")[0].split("/")
+    username = elements[-2]
+    project_default = elements[-1]
+    repo_default = f"{username}/{project_default}"
+
     print_intro()
-    project = get_project()
-    droplet = get_droplet()
-    repo = get_repo()
+    project = get_project(project_default)
+    repo = get_repo(repo_default)
     deployer = get_deployer()
 
     dev_db = get_database("development")
@@ -257,8 +264,9 @@ def main():
     create_django_project(project)
     exempt_long_lines(settings)
     change_settings(settings)
-    change_cd_workflow("./.github/workflows/cd.yml", droplet, repo, deployer)
+    change_cd_workflow("./.github/workflows/cd.yml", project, deployer)
     change_dockerfile(project)
+    change_compose_prod(repo)
     change_readme(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
