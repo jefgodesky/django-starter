@@ -170,14 +170,16 @@ def change_cd_workflow(filename: str, project: str, droplet_user: str):
 
 
 def change_dockerfile(project: str):
-    with open("docker/Dockerfile") as file:
+    filename = "docker/Dockerfile"
+
+    with open(filename) as file:
         dockerfile = file.read()
 
     dockerfile = dockerfile.replace(
         'ARG SITENAME="django_starter"', f'ARG SITENAME="{project}"'
     )
 
-    with open("docker/Dockerfile", "w") as file:
+    with open(filename, "w") as file:
         file.write(dockerfile)
 
 
