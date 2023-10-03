@@ -21,7 +21,6 @@ COPY ./src ./src
 
 # use non-root user
 RUN chown -R ops:ops /home/ops
-USER ops
 
 
 ### DEVELOPMENT
@@ -32,8 +31,10 @@ FROM staging AS dev
 WORKDIR /home/ops/src
 
 # install dependencies
+COPY ./src/requirements.txt ./requirements.txt
 COPY ./src/requirements.dev.txt ./requirements.dev.txt
 RUN pip install -r requirements.dev.txt
+USER ops
 
 # run entrypoint
 ENTRYPOINT ["../entrypoint.sh"]
@@ -47,10 +48,12 @@ FROM staging AS test
 WORKDIR /home/ops/src
 
 # install dependencies
+COPY ./src/requirements.txt ./requirements.txt
 COPY ./src/requirements.dev.txt ./requirements.dev.txt
 RUN pip install -r requirements.dev.txt
+USER ops
 
-# run entrypoint
+# run tests
 RUN black .
 RUN isort .
 RUN flake8 .
@@ -72,6 +75,7 @@ WORKDIR /home/ops/src
 # install dependencies
 COPY ./src/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
+USER ops
 
 # entrypoint
 ENTRYPOINT ["../entrypoint.sh"]
