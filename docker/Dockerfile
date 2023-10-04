@@ -75,8 +75,8 @@ WORKDIR /home/ops/src
 # install dependencies
 COPY ./src/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install gunicorn
 USER ops
 
 # entrypoint
 ENTRYPOINT ["../entrypoint.sh"]
-CMD ["gunicorn", "--bind :$PORT", "--workers 1", "--threads 1", "--timeout 0", "\"$SITENAME:create_app()\""]

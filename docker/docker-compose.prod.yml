@@ -15,7 +15,6 @@ services:
       SQL_PORT: 5432
     env_file:
       - /home/deployer/.env.prod
-    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     depends_on:
