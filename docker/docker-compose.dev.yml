@@ -23,6 +23,8 @@ services:
       - "8002:8000"
     depends_on:
       - db
+    volumes:
+      - ../src:/home/ops/src
 
 volumes:
   db-data:
