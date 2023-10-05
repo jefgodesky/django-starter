@@ -7,7 +7,7 @@ pip install GitPython
 cd ..
 clear
 python make.py
-exit
+deactivate
 clear
 rm -Rf src/env
 rm -f make.py
