@@ -153,28 +153,27 @@ if not DEBUG:
         file.write(settings)
 
 
-def replace_in_file(filename: str, replacements):
-    with open(filename) as file:
+def replace_in_file(src: str, replacements, dest=None):
+    if dest is None:
+        dest = src
+
+    with open(src) as file:
         contents = file.read()
 
     for pattern, repl in replacements:
         contents = re.sub(pattern, repl, contents)
 
-    with open(filename, "w") as file:
+    with open(dest, "w") as file:
         file.write(contents)
 
 
-def change_cd_workflow(filename: str, project: str, droplet_user: str):
+def change_cd_workflow(project: str, droplet_user: str):
     replacements = [
-        ("#on:", "on:"),
-        ("#  push:", "  push:"),
-        ("#    branches: [main]", "    branches: [main]"),
-        ("#  workflow_dispatch:", "  workflow_dispatch:"),
         ("PROJECT", project),
         ("DEPLOYER_USERNAME", droplet_user),
     ]
 
-    replace_in_file(filename, replacements)
+    replace_in_file("cd.yml", replacements, dest="./.github/workflows/cd.yml")
 
 
 def change_dockerfile(project: str):
@@ -203,9 +202,6 @@ def change_pytest_ini(project: str):
 
 
 def make_env(env: str, db: str, db_user: str, db_password: str):
-    with open("docker/.env.example") as example:
-        settings = example.read()
-
     debug_environments = ["dev", "test"]
     debug = 1 if env in debug_environments else 0
     secret_key = get_random_secret_key()
@@ -221,11 +217,7 @@ def make_env(env: str, db: str, db_user: str, db_password: str):
         ("POSTGRES_PASSWORD=password", f"POSTGRES_PASSWORD={db_password}"),
     ]
 
-    for pattern, replacement in replacements:
-        settings = settings.replace(pattern, replacement)
-
-    with open(f"docker/.env.{env}", "w") as file:
-        file.write(settings)
+    replace_in_file("docker/.env.example", replacements, dest=f"docker/.env.{env}")
 
 
 def change_readme(project: str):
@@ -278,7 +270,7 @@ def main():
     create_django_project(project)
     exempt_long_lines(settings)
     change_settings(settings)
-    change_cd_workflow("./.github/workflows/cd.yml", project, deployer)
+    change_cd_workflow(project, deployer)
     change_dockerfile(project)
     change_compose_prod(repo, deployer)
     change_pytest_ini(project)
