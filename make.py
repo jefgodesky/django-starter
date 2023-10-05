@@ -166,6 +166,10 @@ def replace_in_file(filename: str, replacements):
 
 def change_cd_workflow(filename: str, project: str, droplet_user: str):
     replacements = [
+        ("#on:", "on:"),
+        ("#  push:", "  push:"),
+        ("#    branches: [main]", "    branches: [main]"),
+        ("#  workflow_dispatch:", "  workflow_dispatch:"),
         ("PROJECT", project),
         ("DEPLOYER_USERNAME", droplet_user),
     ]
