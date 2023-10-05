@@ -153,52 +153,49 @@ if not DEBUG:
         file.write(settings)
 
 
-def change_cd_workflow(filename: str, project: str, droplet_user: str):
+def replace_in_file(filename: str, replacements):
     with open(filename) as file:
-        workflow = file.read()
+        contents = file.read()
 
+    for pattern, repl in replacements:
+        contents = re.sub(pattern, repl, contents)
+
+    with open(filename, "w") as file:
+        file.write(contents)
+
+
+def change_cd_workflow(filename: str, project: str, droplet_user: str):
     replacements = [
         ("PROJECT", project),
         ("DEPLOYER_USERNAME", droplet_user),
     ]
 
-    for pattern, replacement in replacements:
-        workflow = workflow.replace(pattern, replacement)
-
-    with open(filename, "w") as file:
-        file.write(workflow)
+    replace_in_file(filename, replacements)
 
 
 def change_dockerfile(project: str):
-    filename = "docker/Dockerfile"
+    replacements = [
+        ('ARG SITENAME="django_starter"', f'ARG SITENAME="{project}"'),
+    ]
 
-    with open(filename) as file:
-        dockerfile = file.read()
-
-    dockerfile = dockerfile.replace(
-        'ARG SITENAME="django_starter"', f'ARG SITENAME="{project}"'
-    )
-
-    with open(filename, "w") as file:
-        file.write(dockerfile)
+    replace_in_file("docker/Dockerfile", replacements)
 
 
 def change_compose_prod(repo: str, deployer: str):
-    filename = "docker/docker-compose.prod.yml"
-
-    with open(filename) as file:
-        compose = file.read()
-
     replacements = [
         ("image: ghcr.io/REPO:main", f"image: ghcr.io/{repo}:main"),
         ("- /home/deployer/.env.prod", f"- /home/{deployer}/.env.prod"),
     ]
 
-    for pattern, replacement in replacements:
-        compose = compose.replace(pattern, replacement)
+    replace_in_file("docker/docker-compose.prod.yml", replacements)
 
-    with open(filename, "w") as file:
-        file.write(compose)
+
+def change_pytest_ini(project: str):
+    replacements = [
+        ("PROJECT", project),
+    ]
+
+    replace_in_file("src/pytest.ini", replacements)
 
 
 def make_env(env: str, db: str, db_user: str, db_password: str):
@@ -280,6 +277,7 @@ def main():
     change_cd_workflow("./.github/workflows/cd.yml", project, deployer)
     change_dockerfile(project)
     change_compose_prod(repo, deployer)
+    change_pytest_ini(project)
     change_readme(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
