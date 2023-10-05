@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from inspect import cleandoc
@@ -168,6 +169,10 @@ def replace_in_file(src: str, replacements, dest=None):
 
 
 def change_cd_workflow(project: str, droplet_user: str):
+    workflow_directory = "./.github/workflows"
+    if not os.path.exists(workflow_directory):
+        os.makedirs(workflow_directory)
+
     replacements = [
         ("PROJECT", project),
         ("DEPLOYER_USERNAME", droplet_user),
