@@ -158,6 +158,27 @@ if not DEBUG:
         file.write(settings)
 
 
+def create_accounts_model():
+    lines = [
+        "from django.contrib.auth.models import AbstractBaseUser",
+        "from django.db import models",
+        "from django.utils import timezone",
+        "",
+        "",
+        "class UserAccount(AbstractBaseUser):",
+        "    username = models.TextField(blank=False, unique=True)",
+        "    is_active = models.BooleanField(default=True)",
+        "",
+        '    USERNAME_FIELD = "username"',
+        "    REQUIRED_FIELDS = [",
+        '        "is_active",',
+        "    ]",
+    ]
+
+    with open("./src/accounts/models.py", "w") as file:
+        file.write(os.linesep.join(lines))
+
+
 def replace_in_file(src: str, replacements, dest=None):
     if dest is None:
         dest = src
@@ -278,6 +299,7 @@ def main():
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
     create_accounts_app()
+    create_accounts_model()
     exempt_long_lines(settings)
     change_settings(settings)
     change_cd_workflow(project, deployer)
