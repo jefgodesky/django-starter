@@ -182,6 +182,7 @@ def create_users_model(users: str):
         "class UserAccount(AbstractBaseUser):",
         "    username = models.TextField(blank=False, unique=True)",
         "    is_active = models.BooleanField(default=True)",
+        "    created = models.DateTimeField(default=timezone.now)",
         "",
         '    USERNAME_FIELD = "username"',
         "    REQUIRED_FIELDS = [",
