@@ -50,6 +50,12 @@ def get_deployer():
     return prompt(cleandoc(msg), prompt_text)
 
 
+def get_users_appname():
+    msg = "What would you like to call the app that handles your users?"
+    prompt_text = "Users app (users): "
+    return prompt(cleandoc(msg), prompt_text) or "users"
+
+
 def get_database(env: str):
     msg_before = "What is the name of the database that you would like to use in your "
     msg = f"{msg_before} {env} environment?"
@@ -75,8 +81,8 @@ def create_django_project(project: str):
     subprocess.run(["django-admin", "startproject", project, "."], cwd="src")
 
 
-def create_users_app():
-    subprocess.run(["python", "manage.py", "startapp", "users"], cwd="src")
+def create_users_app(users: str):
+    subprocess.run(["python", "manage.py", "startapp", users], cwd="src")
 
 
 def exempt_long_lines(filename: str):
@@ -124,7 +130,7 @@ def change_database_settings(settings: str):
     return settings.replace(match_databases.group(0), f"DATABASES = {databases}")
 
 
-def change_settings(filename: str):
+def change_settings(filename: str, users: str):
     with open(filename) as file:
         settings = file.read()
 
@@ -133,7 +139,7 @@ def change_settings(filename: str):
 
     new_settings_anchor = "from pathlib import Path"
     new_settings_sep = os.linesep + os.linesep
-    new_settings = ['AUTH_USER_MODEL = "users.User"', "SITE_ID = 1"]
+    new_settings = [f'AUTH_USER_MODEL = "{users}.UserAccount"', "SITE_ID = 1"]
     new_settings_string = (
         new_settings_sep + os.linesep.join(new_settings) + new_settings_sep
     )
@@ -167,14 +173,14 @@ if not DEBUG:
         file.write(settings)
 
 
-def create_users_model():
+def create_users_model(users: str):
     lines = [
         "from django.contrib.auth.models import AbstractBaseUser",
         "from django.db import models",
         "from django.utils import timezone",
         "",
         "",
-        "class User(AbstractBaseUser):",
+        "class UserAccount(AbstractBaseUser):",
         "    username = models.TextField(blank=False, unique=True)",
         "    is_active = models.BooleanField(default=True)",
         "",
@@ -184,7 +190,7 @@ def create_users_model():
         "    ]",
     ]
 
-    with open("./src/accounts/models.py", "w") as file:
+    with open(f"./src/{users}/models.py", "w") as file:
         file.write(os.linesep.join(lines))
 
 
@@ -292,6 +298,7 @@ def main():
     project = get_project(project_default)
     repo = get_repo(repo_default)
     deployer = get_deployer()
+    users = get_users_appname()
 
     dev_db = get_database("development")
     dev_db_user = get_database_user("development")
@@ -307,10 +314,10 @@ def main():
 
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
-    create_users_app()
-    create_users_model()
+    create_users_app(users)
+    create_users_model(users)
     exempt_long_lines(settings)
-    change_settings(settings)
+    change_settings(settings, users)
     change_cd_workflow(project, deployer)
     change_dockerfile(project)
     change_compose_prod(repo, deployer)
