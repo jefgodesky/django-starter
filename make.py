@@ -75,8 +75,8 @@ def create_django_project(project: str):
     subprocess.run(["django-admin", "startproject", project, "."], cwd="src")
 
 
-def create_accounts_app():
-    subprocess.run(["python", "manage.py", "startapp", "accounts"])
+def create_users_app():
+    subprocess.run(["python", "manage.py", "startapp", "users"])
 
 
 def exempt_long_lines(filename: str):
@@ -133,7 +133,7 @@ def change_settings(filename: str):
 
     new_settings_anchor = "from pathlib import Path"
     new_settings_sep = os.linesep + os.linesep
-    new_settings = ['AUTH_USER_MODEL = "accounts.UserAccount"', "SITE_ID = 1"]
+    new_settings = ['AUTH_USER_MODEL = "users.User"', "SITE_ID = 1"]
     new_settings_string = (
         new_settings_sep + os.linesep.join(new_settings) + new_settings_sep
     )
@@ -167,14 +167,14 @@ if not DEBUG:
         file.write(settings)
 
 
-def create_accounts_model():
+def create_users_model():
     lines = [
         "from django.contrib.auth.models import AbstractBaseUser",
         "from django.db import models",
         "from django.utils import timezone",
         "",
         "",
-        "class UserAccount(AbstractBaseUser):",
+        "class User(AbstractBaseUser):",
         "    username = models.TextField(blank=False, unique=True)",
         "    is_active = models.BooleanField(default=True)",
         "",
@@ -307,8 +307,8 @@ def main():
 
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
-    create_accounts_app()
-    create_accounts_model()
+    create_users_app()
+    create_users_model()
     exempt_long_lines(settings)
     change_settings(settings)
     change_cd_workflow(project, deployer)
