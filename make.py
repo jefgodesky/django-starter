@@ -75,6 +75,10 @@ def create_django_project(project: str):
     subprocess.run(["django-admin", "startproject", project, "."], cwd="src")
 
 
+def create_accounts_app():
+    subprocess.run(["python", "manage.py", "startapp", "accounts"])
+
+
 def exempt_long_lines(filename: str):
     with open(filename) as file:
         lines = file.readlines()
@@ -273,6 +277,7 @@ def main():
 
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
+    create_accounts_app()
     exempt_long_lines(settings)
     change_settings(settings)
     change_cd_workflow(project, deployer)
