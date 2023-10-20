@@ -7,7 +7,6 @@ services:
       - .env.dev
     volumes:
       - db-data:/var/lib/postgresql/data:delegated
-      - ./db:/docker-entrypoint-initdb.d/
 
   dev:
     build:

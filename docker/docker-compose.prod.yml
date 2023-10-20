@@ -7,7 +7,6 @@ services:
       - /home/deployer/.env.prod
     volumes:
       - db-data:/var/lib/postgresql/data:delegated
-      - ./db:/docker-entrypoint-initdb.d/
 
   prod:
     image: ghcr.io/REPO:main
