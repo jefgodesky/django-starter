@@ -139,7 +139,7 @@ def change_settings(filename: str):
     )
 
     replacements = [
-        (new_settings_anchor, new_settings_string + new_settings_string),
+        (new_settings_anchor, new_settings_anchor + new_settings_string),
         (r"from pathlib import Path", "import os\nfrom pathlib import Path"),
         (r'SECRET_KEY = "(.*)"', 'SECRET_KEY = os.environ.get("SECRET_KEY")'),
         (r"DEBUG = True", 'DEBUG = int(os.environ.get("DEBUG", default=0))'),
