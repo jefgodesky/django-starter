@@ -172,6 +172,35 @@ if not DEBUG:
         file.write(settings)
 
 
+def create_users_model_test(users: str):
+    lines = [
+        "import pytest",
+        "import datetime",
+        "from django.utils import timezone",
+        "from .models import UserAccount",
+        "",
+        "",
+        "@pytest.mark.django_db",
+        "def test_active_default():",
+        "    account = UserAccount()",
+        "    assert account.is_active is True",
+        "",
+        "",
+        "@pytest.mark.django_db",
+        "def test_created_default():",
+        "    before = timezone.now()",
+        "    account = UserAccount()",
+        "    after = timezone.now()",
+        "    assert isInstance(account.created, datetime.datetime)",
+        "    assert before <= account.created",
+        "    assert after >= account.created",
+        "",
+    ]
+
+    with open(f"./src/{users}/models_test.py", "w") as file:
+        file.write(os.linesep.join(lines))
+
+
 def create_users_model(users: str):
     lines = [
         "from django.contrib.auth.models import AbstractBaseUser",
@@ -188,6 +217,7 @@ def create_users_model(users: str):
         "    REQUIRED_FIELDS = [",
         '        "is_active",',
         "    ]",
+        "",
     ]
 
     with open(f"./src/{users}/models.py", "w") as file:
@@ -315,6 +345,7 @@ def main():
     settings = f"./src/{project}/settings.py"
     create_django_project(project)
     create_users_app(users)
+    create_users_model_test(users)
     create_users_model(users)
     exempt_long_lines(settings)
     change_settings(settings, users)
