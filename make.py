@@ -76,7 +76,7 @@ def create_django_project(project: str):
 
 
 def create_users_app():
-    subprocess.run(["python", "manage.py", "startapp", "users"])
+    subprocess.run(["python", "manage.py", "startapp", "users"], cwd="src")
 
 
 def exempt_long_lines(filename: str):
