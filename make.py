@@ -100,8 +100,8 @@ def exempt_long_lines(filename: str):
         file.writelines(modified_lines)
 
 
-def add_installed_apps(settings: str):
-    apps_to_add = ['"rest_framework"']
+def add_installed_apps(settings: str, users: str):
+    apps_to_add = ['"rest_framework"', users]
     match = re.search(r"INSTALLED_APPS = \[(.*?)]", settings, flags=re.DOTALL)
     if not match:
         return settings
@@ -134,7 +134,7 @@ def change_settings(filename: str, users: str):
     with open(filename) as file:
         settings = file.read()
 
-    settings = add_installed_apps(settings)
+    settings = add_installed_apps(settings, users)
     settings = change_database_settings(settings)
 
     new_settings_anchor = "from pathlib import Path"
