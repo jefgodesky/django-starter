@@ -329,12 +329,13 @@ def change_readme(project: str):
         file.write(content)
 
 
-def change_up_script(project: str):
+def change_scripts(project: str):
     replacements = [
         ("PROJECT", project),
     ]
 
     replace_in_file("up.sh", replacements)
+    replace_in_file("down.sh", replacements)
 
 
 def main():
@@ -375,7 +376,7 @@ def main():
     change_compose_prod(repo, deployer)
     change_pytest_ini(project)
     change_readme(project)
-    change_up_script(project)
+    change_scripts(project)
     make_env("dev", dev_db, dev_db_user, dev_db_password)
     make_env("test", test_db, test_db_user, test_db_password)
     make_env("prod", prod_db, prod_db_user, prod_db_password)
