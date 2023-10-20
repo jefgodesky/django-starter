@@ -130,7 +130,16 @@ def change_settings(filename: str):
 
     settings = add_installed_apps(settings)
     settings = change_database_settings(settings)
+
+    new_settings_anchor = "from pathlib import Path"
+    new_settings_sep = os.linesep + os.linesep
+    new_settings = ['AUTH_USER_MODEL = "accounts.UserAccount"', "SITE_ID = 1"]
+    new_settings_string = (
+        new_settings_sep + os.linesep.join(new_settings) + new_settings_sep
+    )
+
     replacements = [
+        (new_settings_anchor, new_settings_string + new_settings_string),
         (r"from pathlib import Path", "import os\nfrom pathlib import Path"),
         (r'SECRET_KEY = "(.*)"', 'SECRET_KEY = os.environ.get("SECRET_KEY")'),
         (r"DEBUG = True", 'DEBUG = int(os.environ.get("DEBUG", default=0))'),
