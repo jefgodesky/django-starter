@@ -101,7 +101,7 @@ def exempt_long_lines(filename: str):
 
 
 def add_installed_apps(settings: str, users: str):
-    apps_to_add = ['"rest_framework"', users]
+    apps_to_add = ['"rest_framework"', f'"{users}"']
     match = re.search(r"INSTALLED_APPS = \[(.*?)]", settings, flags=re.DOTALL)
     if not match:
         return settings
