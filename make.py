@@ -1,6 +1,7 @@
 import os
 import re
 import subprocess
+from getpass import getpass
 from inspect import cleandoc
 
 from django.core.management.utils import get_random_secret_key
@@ -27,6 +28,11 @@ def print_intro():
 def prompt(msg: str, prompt_text: str):
     print("\n" + msg)
     return input(prompt_text)
+
+
+def prompt_password(msg: str, prompt_text: str):
+    print("\n" + msg)
+    return getpass(prompt_text)
 
 
 def get_project(default_value: str):
@@ -74,7 +80,7 @@ def get_database_password(env: str):
     msg_before = "What is the password for the database user for your "
     msg = f"{msg_before} {env} environment database?"
     prompt_text = f"{env.capitalize()} database user password: "
-    return prompt(cleandoc(msg), prompt_text)
+    return prompt_password(cleandoc(msg), prompt_text)
 
 
 def create_django_project(project: str):
