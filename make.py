@@ -172,6 +172,18 @@ if not DEBUG:
         file.write(settings)
 
 
+def change_urls(project: str):
+    anchor = "urlpatterns = ["
+    section_break = os.linesep + os.linesep
+    app_name = f'app_name = "{project}"'
+    replacement = app_name + section_break + anchor
+    replacements = [
+        (r"urlpatterns = \[", replacement),
+    ]
+
+    replace_in_file(f"./src/{project}/urls.py", replacements)
+
+
 def create_users_model_test(users: str):
     lines = [
         "import pytest",
@@ -357,6 +369,7 @@ def main():
     create_users_model(users)
     exempt_long_lines(settings)
     change_settings(settings, users)
+    change_urls(project)
     change_cd_workflow(project, deployer)
     change_dockerfile(project)
     change_compose_prod(repo, deployer)
