@@ -191,7 +191,7 @@ def create_users_model_test(users: str):
         "    before = timezone.now()",
         "    account = UserAccount()",
         "    after = timezone.now()",
-        "    assert isInstance(account.created, datetime.datetime)",
+        "    assert isinstance(account.created, datetime.datetime)",
         "    assert before <= account.created",
         "    assert after >= account.created",
         "",
