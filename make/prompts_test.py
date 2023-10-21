@@ -186,3 +186,27 @@ def test_get_database_user_show_message(get_database_user_setup):
 def test_get_database_user_gets_input(get_database_user_setup):
     _, result, test_input = get_database_user_setup
     assert result == test_input
+
+
+@pytest.fixture
+def get_database_password_setup(monkeypatch, capfd):
+    test_password = "password"
+    monkeypatch.setattr(prompts, "getpass", lambda _: test_password)
+    result = prompts.get_database_password("test")
+    out, err = capfd.readouterr()
+    return out, err, result, test_password
+
+
+def test_get_database_password_show_message(get_database_password_setup):
+    out, _, _, _ = get_database_password_setup
+    assert "for your test environment database?" in out
+
+
+def test_get_database_password_password_not_shown(get_database_password_setup):
+    _, err, _, test_password = get_database_password_setup
+    assert test_password not in err
+
+
+def test_get_database_password_gets_input(get_database_password_setup):
+    _, _, result, test_input = get_database_password_setup
+    assert result == test_input
