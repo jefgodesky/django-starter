@@ -106,3 +106,11 @@ def change_compose_prod(repo: str, deployer: str, env: str):
     ]
 
     replace_in_file(f"docker/docker-compose.{env}.yml", replacements)
+
+
+def change_pytest_ini(project: str):
+    replacements = [
+        ("PROJECT", project),
+    ]
+
+    replace_in_file("src/pytest.ini", replacements)

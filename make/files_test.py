@@ -153,3 +153,14 @@ def test_change_compose_prod_args(monkeypatch):
             ("- /home/deployer/.env.prod", "- /home/deployer/.env.prod"),
         ],
     )
+
+
+def test_change_pytest_ini_args(monkeypatch):
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    project_name = "myproject"
+    files.change_pytest_ini(project_name)
+    replace_in_file_mock.assert_called_once_with(
+        "src/pytest.ini",
+        [("PROJECT", project_name)],
+    )
