@@ -89,3 +89,11 @@ def change_cd_workflow(project: str, droplet_user: str):
     ]
 
     replace_in_file("cd.yml", replacements, dest="./.github/workflows/cd.yml")
+
+
+def change_dockerfile(project: str):
+    replacements = [
+        ('ARG SITENAME="django_starter"', f'ARG SITENAME="{project}"'),
+    ]
+
+    replace_in_file("docker/Dockerfile", replacements)

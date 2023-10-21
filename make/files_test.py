@@ -119,7 +119,7 @@ def test_change_cd_workflow_skip_makedirs(monkeypatch):
     makedirs_mock.assert_not_called()
 
 
-def test_change_cd_workflow_args(mock_file, monkeypatch):
+def test_change_cd_workflow_args(monkeypatch):
     monkeypatch.setattr(os.path, "exists", lambda _: True)
     monkeypatch.setattr(os, "makedirs", lambda _: None)
     replace_in_file_mock = MagicMock()
@@ -129,4 +129,14 @@ def test_change_cd_workflow_args(mock_file, monkeypatch):
         "cd.yml",
         [("PROJECT", "myproject"), ("DEPLOYER_USERNAME", "user")],
         dest="./.github/workflows/cd.yml",
+    )
+
+
+def test_change_dockerfile_args(monkeypatch):
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.change_dockerfile("myproject")
+    replace_in_file_mock.assert_called_once_with(
+        "docker/Dockerfile",
+        [('ARG SITENAME="django_starter"', 'ARG SITENAME="myproject"')],
     )
