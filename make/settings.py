@@ -67,3 +67,11 @@ def set_allowed_hosts(settings: str):
     find = r"ALLOWED_HOSTS = \[\]"
     replacement = 'ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")'
     return re.sub(find, replacement, settings)
+
+
+def add_prod_rest_framework_renderer(settings: str):
+    addendum = """if not DEBUG:
+    REST_FRAMEWORK = {
+        "DEFAULT_RENDERER_CLASSES": "rest_framework.renderers.JSONRenderer"
+    }"""
+    return settings + os.linesep + os.linesep + addendum

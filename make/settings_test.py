@@ -73,3 +73,12 @@ def test_set_allowed_hosts():
     actual = settings.set_allowed_hosts(test_example)
     expected = 'ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")'
     assert expected in actual
+
+
+def test_add_prod_rest_framework():
+    actual = settings.add_prod_rest_framework_renderer(test_example)
+    expected = """if not DEBUG:
+    REST_FRAMEWORK = {
+        "DEFAULT_RENDERER_CLASSES": "rest_framework.renderers.JSONRenderer"
+    }"""
+    assert expected in actual
