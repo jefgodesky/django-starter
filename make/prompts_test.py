@@ -148,3 +148,22 @@ def test_get_users_appname_gets_default(monkeypatch):
     monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_users_appname()
     assert result == "users"
+
+
+@pytest.fixture
+def get_database_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_database("test")
+    captured = capsys.readouterr().out
+    return captured, result, test_input
+
+
+def test_get_database_show_message(get_database_setup):
+    captured, _, _ = get_database_setup
+    assert "in your test environment?" in captured
+
+
+def test_get_database_gets_input(get_database_setup):
+    _, result, test_input = get_database_setup
+    assert result == test_input

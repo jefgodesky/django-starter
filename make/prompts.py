@@ -37,3 +37,10 @@ def get_users_appname():
     msg = "What would you like to call the app that handles your users?"
     prompt_text = "Users app (users): "
     return prompt(cleandoc(msg), prompt_text) or "users"
+
+
+def get_database(env: str):
+    msg_before = "What is the name of the database that you would like to use in your"
+    msg = f"{msg_before} {env} environment?"
+    prompt_text = f"{env.capitalize()} database: "
+    return prompt(cleandoc(msg), prompt_text)
