@@ -240,3 +240,22 @@ def test_change_readme_link_django(change_readme_content):
     actual = change_readme_content
     link = "[Django](https://www.djangoproject.com/)"
     assert link in actual
+
+
+@pytest.fixture
+def change_scripts_setup(monkeypatch):
+    mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", mock)
+    project_name = "myproject"
+    files.change_scripts(project_name)
+    return mock, project_name
+
+
+def test_change_scripts_up(change_scripts_setup):
+    mock, project_name = change_scripts_setup
+    mock.assert_any_call("up.sh", [("PROJECT", project_name)])
+
+
+def test_change_scripts_down(change_scripts_setup):
+    mock, project_name = change_scripts_setup
+    mock.assert_any_call("down.sh", [("PROJECT", project_name)])

@@ -160,3 +160,12 @@ def change_readme(project: str):
 
     with open("README.md", "w") as file:
         file.write(content)
+
+
+def change_scripts(project: str):
+    replacements = [
+        ("PROJECT", project),
+    ]
+
+    replace_in_file("up.sh", replacements)
+    replace_in_file("down.sh", replacements)
