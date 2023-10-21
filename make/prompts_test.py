@@ -2,6 +2,11 @@ import prompts
 import pytest
 
 
+def mock_empty_prompt(msg, prompt_text):
+    print("\n" + msg)
+    return ""
+
+
 @pytest.fixture
 def prompt_setup(monkeypatch, capsys):
     test_input = "Test"
@@ -69,11 +74,32 @@ def test_get_project_gets_input(get_project_setup):
 
 def test_get_project_gets_default(monkeypatch):
     default_value = "default"
-
-    def mock_prompt(msg, prompt_text):
-        print("\n" + msg)
-        return ""
-
-    monkeypatch.setattr(prompts, "prompt", mock_prompt)
+    monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_project(default_value)
+    assert result == default_value
+
+
+@pytest.fixture
+def get_repo_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_repo("")
+    captured = capsys.readouterr().out
+    return captured, result, test_input
+
+
+def test_get_repo_show_message(get_repo_setup):
+    captured, _, _ = get_repo_setup
+    assert "What is the name of your GitHub repository?" in captured
+
+
+def test_get_repo_gets_input(get_repo_setup):
+    _, result, test_input = get_repo_setup
+    assert result == test_input
+
+
+def test_get_repo_gets_default(monkeypatch):
+    default_value = "default"
+    monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
+    result = prompts.get_repo(default_value)
     assert result == default_value
