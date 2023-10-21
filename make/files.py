@@ -97,3 +97,12 @@ def change_dockerfile(project: str):
     ]
 
     replace_in_file("docker/Dockerfile", replacements)
+
+
+def change_compose_prod(repo: str, deployer: str, env: str):
+    replacements = [
+        ("image: ghcr.io/REPO:main", f"image: ghcr.io/{repo}:main"),
+        ("- /home/deployer/.env.prod", f"- /home/{deployer}/.env.prod"),
+    ]
+
+    replace_in_file(f"docker/docker-compose.{env}.yml", replacements)

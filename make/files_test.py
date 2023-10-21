@@ -140,3 +140,16 @@ def test_change_dockerfile_args(monkeypatch):
         "docker/Dockerfile",
         [('ARG SITENAME="django_starter"', 'ARG SITENAME="myproject"')],
     )
+
+
+def test_change_compose_prod_args(monkeypatch):
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.change_compose_prod("repo", "deployer", "prod")
+    replace_in_file_mock.assert_called_once_with(
+        "docker/docker-compose.prod.yml",
+        [
+            ("image: ghcr.io/REPO:main", "image: ghcr.io/repo:main"),
+            ("- /home/deployer/.env.prod", "- /home/deployer/.env.prod"),
+        ],
+    )
