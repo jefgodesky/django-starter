@@ -210,3 +210,28 @@ def test_get_database_password_password_not_shown(get_database_password_setup):
 def test_get_database_password_gets_input(get_database_password_setup):
     _, _, result, test_input = get_database_password_setup
     assert result == test_input
+
+
+@pytest.fixture
+def get_debug_environments_setup(monkeypatch, capsys):
+    test_input = "devx, testx"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_debug_environments()
+    captured = capsys.readouterr().out
+    return captured, result
+
+
+def test_get_debug_environments_show_message(get_debug_environments_setup):
+    captured, _ = get_debug_environments_setup
+    assert "Provide a comma-separated list of environments" in captured
+
+
+def test_get_debug_environments_gets_input(get_debug_environments_setup):
+    _, result = get_debug_environments_setup
+    assert result == ["devx", "testx"]
+
+
+def test_get_debug_environments_gets_default(monkeypatch):
+    monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
+    result = prompts.get_debug_environments()
+    assert result == ["dev", "test"]
