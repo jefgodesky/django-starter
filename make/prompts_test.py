@@ -235,3 +235,28 @@ def test_get_debug_environments_gets_default(monkeypatch):
     monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_debug_environments()
     assert result == ["dev", "test"]
+
+
+@pytest.fixture
+def get_prod_environments_setup(monkeypatch, capsys):
+    test_input = "blue, green"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_prod_environments()
+    captured = capsys.readouterr().out
+    return captured, result
+
+
+def test_get_prod_environments_show_message(get_prod_environments_setup):
+    captured, _ = get_prod_environments_setup
+    assert "Provide a comma-separated list of environments" in captured
+
+
+def test_get_prod_environments_gets_input(get_prod_environments_setup):
+    _, result = get_prod_environments_setup
+    assert result == ["blue", "green"]
+
+
+def test_get_prod_environments_gets_default(monkeypatch):
+    monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
+    result = prompts.get_prod_environments()
+    assert result == ["prod"]

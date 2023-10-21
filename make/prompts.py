@@ -63,6 +63,14 @@ def get_database_password(env: str):
 def get_debug_environments():
     msg = """Provide a comma-separated list of environments that you
       would like to create with debugging turned on."""
-    prompt_text = "Debugging environments: "
+    prompt_text = "Debugging environments (dev, test): "
     user_input = prompt(msg, prompt_text) or "dev, test"
+    return [env.strip() for env in user_input.split(",")]
+
+
+def get_prod_environments():
+    msg = """Provide a comma-separated list of environments that you
+      would like to create with debugging turned off."""
+    prompt_text = "Debugging environments (prod): "
+    user_input = prompt(msg, prompt_text) or "prod"
     return [env.strip() for env in user_input.split(",")]
