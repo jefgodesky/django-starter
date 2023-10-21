@@ -31,3 +31,9 @@ def get_deployer():
       to automated, continuous delivery. What is this user’s user name?"""
     prompt_text = "Deployment username: "
     return prompt(cleandoc(msg), prompt_text)
+
+
+def get_users_appname():
+    msg = "What would you like to call the app that handles your users?"
+    prompt_text = "Users app (users): "
+    return prompt(cleandoc(msg), prompt_text) or "users"

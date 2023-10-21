@@ -122,3 +122,29 @@ def test_get_deployer_show_message(get_deployer_setup):
 def test_get_deployer_gets_input(get_deployer_setup):
     _, result, test_input = get_deployer_setup
     assert result == test_input
+
+
+@pytest.fixture
+def get_users_appname_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_users_appname()
+    captured = capsys.readouterr().out
+    return captured, result, test_input
+
+
+def test_get_users_appname_show_message(get_users_appname_setup):
+    captured, _, _ = get_users_appname_setup
+    expected = "What would you like to call the app that handles your users?"
+    assert expected in captured
+
+
+def test_get_users_appname_gets_input(get_users_appname_setup):
+    _, result, test_input = get_users_appname_setup
+    assert result == test_input
+
+
+def test_get_users_appname_gets_default(monkeypatch):
+    monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
+    result = prompts.get_users_appname()
+    assert result == "users"
