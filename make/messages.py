@@ -1,3 +1,4 @@
+from getpass import getpass
 from inspect import cleandoc
 
 
@@ -21,3 +22,8 @@ def print_intro():
 def prompt(msg: str, prompt_text: str):
     print("\n" + msg)
     return input(prompt_text)
+
+
+def prompt_password(msg: str, prompt_text: str):
+    print("\n" + msg)
+    return getpass(prompt_text)
