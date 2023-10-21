@@ -1,4 +1,5 @@
 import messages
+import pytest
 
 
 def test_print_bold(capsys):
@@ -20,3 +21,24 @@ def test_print_intro_text(capsys):
     captured = capsys.readouterr()
     expected = "This script will help you get set up"
     assert expected in captured.out
+
+
+@pytest.fixture
+def prompt_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    test_msg = "Test message."
+    test_prompt = "Test: "
+    result = messages.prompt(test_msg, test_prompt)
+    captured = capsys.readouterr().out
+    return captured, result, test_msg, test_prompt, test_input
+
+
+def test_prompt_show_message(prompt_setup):
+    captured, _, test_msg, _, _ = prompt_setup
+    assert test_msg in captured
+
+
+def test_prompt_gets_input(prompt_setup):
+    _, result, _, _, test_input = prompt_setup
+    assert result == test_input
