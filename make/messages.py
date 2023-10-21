@@ -1,4 +1,3 @@
-from getpass import getpass
 from inspect import cleandoc
 
 
@@ -17,13 +16,3 @@ def print_intro():
       you’re looking for, well, let’s get started!"""
     print_bold(title)
     print(cleandoc(intro))
-
-
-def prompt(msg: str, prompt_text: str):
-    print("\n" + msg)
-    return input(prompt_text)
-
-
-def prompt_password(msg: str, prompt_text: str):
-    print("\n" + msg)
-    return getpass(prompt_text)
