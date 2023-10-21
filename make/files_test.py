@@ -191,3 +191,52 @@ def test_make_env_args(monkeypatch):
         ],
         dest="docker/.env.env",
     )
+
+
+def test_change_readme_write_readme(mock_file):
+    files.change_readme("myproject")
+    args = mock_file.call_args_list[0][0]
+    assert args[0] == "README.md"
+    assert args[1] == "w"
+    assert len(args) == 2
+
+
+@pytest.fixture
+def change_readme_content(mock_file):
+    files.change_readme("myproject")
+    return mock_file().write.call_args[0][0]
+
+
+def test_change_readme_title(change_readme_content):
+    actual = change_readme_content
+    assert "# myproject\n" in actual
+
+
+def test_change_readme_link_tdd(change_readme_content):
+    actual = change_readme_content
+    link = "[test-driven](https://testdriven.io/test-driven-development/)"
+    assert link in actual
+
+
+def test_change_readme_link_cd(change_readme_content):
+    actual = change_readme_content
+    link = "[continuously deployed](https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment)"  # noqa: E501
+    assert link in actual
+
+
+def test_change_readme_link_api_first(change_readme_content):
+    actual = change_readme_content
+    link = "[API-first](https://www.postman.com/api-first/)"
+    assert link in actual
+
+
+def test_change_readme_link_pe(change_readme_content):
+    actual = change_readme_content
+    link = "[progressively enhanced](https://medium.com/bitsrc/a-practical-guide-to-progressive-enhancement-in-2023-52c740c3aff3)"  # noqa: E501
+    assert link in actual
+
+
+def test_change_readme_link_django(change_readme_content):
+    actual = change_readme_content
+    link = "[Django](https://www.djangoproject.com/)"
+    assert link in actual

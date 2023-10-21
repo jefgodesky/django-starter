@@ -138,3 +138,25 @@ def make_env(
     ]
 
     replace_in_file("docker/.env.example", replacements, dest=f"docker/.env.{env}")
+
+
+def change_readme(project: str):
+    descriptors = [
+        ("test-driven", "https://testdriven.io/test-driven-development/"),
+        (
+            "continuously deployed",
+            "https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment",  # noqa: E501
+        ),
+        ("API-first", "https://www.postman.com/api-first/"),
+        (
+            "progressively enhanced",
+            "https://medium.com/bitsrc/a-practical-guide-to-progressive-enhancement-in-2023-52c740c3aff3",  # noqa: E501
+        ),
+    ]
+
+    desc = ", ".join([f"[{text}]({url})" for text, url in descriptors])
+    django = "[Django](https://www.djangoproject.com/)"
+    content = f"# {project}\n\nThis is a {desc} {django} project."
+
+    with open("README.md", "w") as file:
+        file.write(content)
