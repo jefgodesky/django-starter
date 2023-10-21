@@ -43,3 +43,9 @@ def add_new_settings(settings: str, users: str):
         + os.linesep
     )
     return settings.replace(new_settings_anchor, new_settings_string)
+
+
+def add_import_os(settings: str):
+    anchor = "from pathlib import Path"
+    replacement = "import os" + os.linesep + anchor
+    return settings.replace(anchor, replacement)

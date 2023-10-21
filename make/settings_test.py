@@ -48,3 +48,8 @@ def test_add_new_settings_users():
 def test_add_new_settings_siteid():
     actual = settings.add_new_settings(test_example, "users")
     assert "SITE_ID = 1" in actual
+
+
+def test_add_import_os():
+    actual = actual = settings.add_import_os(test_example)
+    assert "import os" in actual
