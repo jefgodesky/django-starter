@@ -49,3 +49,9 @@ def add_import_os(settings: str):
     anchor = "from pathlib import Path"
     replacement = "import os" + os.linesep + anchor
     return settings.replace(anchor, replacement)
+
+
+def set_secret_key(settings: str):
+    find = r'SECRET_KEY = "(.*)"'
+    replacement = 'SECRET_KEY = os.environ.get("SECRET_KEY")'
+    return re.sub(find, replacement, settings)

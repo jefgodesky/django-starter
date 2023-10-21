@@ -2,6 +2,8 @@ import settings
 
 test_example = """from pathlib import Path
 
+SECRET_KEY = "secret"
+
 DATABASES = {
 }
 
@@ -53,3 +55,8 @@ def test_add_new_settings_siteid():
 def test_add_import_os():
     actual = actual = settings.add_import_os(test_example)
     assert "import os" in actual
+
+
+def test_set_secret_key():
+    actual = settings.set_secret_key(test_example)
+    assert 'SECRET_KEY = os.environ.get("SECRET_KEY")' in actual
