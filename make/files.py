@@ -38,3 +38,23 @@ def test_created_default():
 
     with open(f"./src/{users}/models_test.py", "w") as file:
         file.write(content)
+
+
+def create_users_model(users: str):
+    content = """from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
+from django.utils import timezone
+
+
+class UserAccount(AbstractBaseUser):
+    username = models.TextField(blank=False, unique=True)
+    is_active = models.BooleanField(default=True)
+    created = models.DateTimeField(default=timezone.now)
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = [
+        "is_active",
+    ]
+"""
+
+    with open(f"./src/{users}/models.py", "w") as file:
+        file.write(content)
