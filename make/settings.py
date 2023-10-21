@@ -1,3 +1,4 @@
+import os
 import re
 
 
@@ -29,3 +30,16 @@ def change_database_settings(settings: str):
     }
 }"""
     return settings.replace(match_databases.group(0), f"DATABASES = {databases}")
+
+
+def add_new_settings(settings: str, users: str):
+    new_settings_anchor = "from pathlib import Path"
+    new_settings = [f'AUTH_USER_MODEL = "{users}.UserAccount"', "SITE_ID = 1"]
+    new_settings_string = (
+        new_settings_anchor
+        + os.linesep
+        + os.linesep
+        + os.linesep.join(new_settings)
+        + os.linesep
+    )
+    return settings.replace(new_settings_anchor, new_settings_string)

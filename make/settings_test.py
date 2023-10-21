@@ -1,6 +1,8 @@
 import settings
 
-test_example = """DATABASES = {
+test_example = """from pathlib import Path
+
+DATABASES = {
 }
 
 INSTALLED_APPS = [
@@ -36,3 +38,13 @@ def test_change_database_settings():
     }
 }"""
     assert expected in actual
+
+
+def test_add_new_settings_users():
+    actual = settings.add_new_settings(test_example, "users")
+    assert 'AUTH_USER_MODEL = "users.UserAccount"' in actual
+
+
+def test_add_new_settings_siteid():
+    actual = settings.add_new_settings(test_example, "users")
+    assert "SITE_ID = 1" in actual
