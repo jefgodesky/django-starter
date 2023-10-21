@@ -11,6 +11,43 @@ def mock_file(monkeypatch):
     return mock
 
 
+def test_replace_in_file_open_file(mock_file):
+    files.replace_in_file("test.txt", [(r"in", "out")])
+    args = mock_file.call_args_list[0][0]
+    assert args[0] == "test.txt"
+    assert len(args) == 1
+
+
+def test_replace_in_file_text(mock_file):
+    mock_file().read.return_value = "in"
+    files.replace_in_file("test.txt", [(r"in", "out")])
+    actual = mock_file().write.call_args[0][0]
+    assert actual == "out"
+
+
+def test_replace_in_file_regex(mock_file):
+    mock_file().read.return_value = "in/something\n"
+    files.replace_in_file("test.txt", [(r"in\/(.*?)\n", "out")])
+    actual = mock_file().write.call_args[0][0]
+    assert actual == "out"
+
+
+def test_replace_in_file_write_file(mock_file):
+    files.replace_in_file("test.txt", [(r"in", "out")])
+    args = mock_file.call_args_list[1][0]
+    assert args[0] == "test.txt"
+    assert args[1] == "w"
+    assert len(args) == 2
+
+
+def test_replace_in_file_write_file_dest(mock_file):
+    files.replace_in_file("src.txt", [(r"in", "out")], "dest.txt")
+    args = mock_file.call_args_list[1][0]
+    assert args[0] == "dest.txt"
+    assert args[1] == "w"
+    assert len(args) == 2
+
+
 def test_exempt_long_lines_lt(mock_file):
     content = "A" * 87 + "\n"
     mock_file().readlines.return_value = [content]

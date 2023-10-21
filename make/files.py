@@ -1,3 +1,20 @@
+import re
+
+
+def replace_in_file(src: str, replacements, dest=None):
+    if dest is None:
+        dest = src
+
+    with open(src) as file:
+        contents = file.read()
+
+    for pattern, repl in replacements:
+        contents = re.sub(pattern, repl, contents)
+
+    with open(dest, "w") as file:
+        file.write(contents)
+
+
 def exempt_long_lines(filename: str):
     with open(filename) as file:
         lines = file.readlines()
