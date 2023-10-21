@@ -1,3 +1,4 @@
+import os
 import re
 
 
@@ -75,3 +76,16 @@ class UserAccount(AbstractBaseUser):
 
     with open(f"./src/{users}/models.py", "w") as file:
         file.write(content)
+
+
+def change_cd_workflow(project: str, droplet_user: str):
+    workflow_directory = "./.github/workflows"
+    if not os.path.exists(workflow_directory):
+        os.makedirs(workflow_directory)
+
+    replacements = [
+        ("PROJECT", project),
+        ("DEPLOYER_USERNAME", droplet_user),
+    ]
+
+    replace_in_file("cd.yml", replacements, dest="./.github/workflows/cd.yml")

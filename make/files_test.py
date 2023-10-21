@@ -1,4 +1,5 @@
-from unittest.mock import mock_open
+import os
+from unittest.mock import MagicMock, mock_open
 
 import files
 import pytest
@@ -96,3 +97,36 @@ def test_create_users_model_filename(mock_file):
     args = mock_file.call_args[0]
     assert args[0] == "./src/users/models.py"
     assert args[1] == "w"
+
+
+def test_change_cd_workflow_makedirs(monkeypatch):
+    monkeypatch.setattr(os.path, "exists", lambda _: False)
+    makedirs_mock = MagicMock()
+    monkeypatch.setattr(os, "makedirs", makedirs_mock)
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.change_cd_workflow("myproject", "user")
+    makedirs_mock.assert_called_once()
+
+
+def test_change_cd_workflow_skip_makedirs(monkeypatch):
+    monkeypatch.setattr(os.path, "exists", lambda _: True)
+    makedirs_mock = MagicMock()
+    monkeypatch.setattr(os, "makedirs", makedirs_mock)
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.change_cd_workflow("myproject", "user")
+    makedirs_mock.assert_not_called()
+
+
+def test_change_cd_workflow_args(mock_file, monkeypatch):
+    monkeypatch.setattr(os.path, "exists", lambda _: True)
+    monkeypatch.setattr(os, "makedirs", lambda _: None)
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.change_cd_workflow("myproject", "user")
+    replace_in_file_mock.assert_called_once_with(
+        "cd.yml",
+        [("PROJECT", "myproject"), ("DEPLOYER_USERNAME", "user")],
+        dest="./.github/workflows/cd.yml",
+    )
