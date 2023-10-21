@@ -44,3 +44,10 @@ def get_database(env: str):
     msg = f"{msg_before} {env} environment?"
     prompt_text = f"{env.capitalize()} database: "
     return prompt(cleandoc(msg), prompt_text)
+
+
+def get_database_user(env: str):
+    msg_before = "What is the name of the database user for your"
+    msg = f"{msg_before} {env} environment database?"
+    prompt_text = f"{env.capitalize()} database user: "
+    return prompt(cleandoc(msg), prompt_text)

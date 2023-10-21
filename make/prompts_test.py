@@ -167,3 +167,22 @@ def test_get_database_show_message(get_database_setup):
 def test_get_database_gets_input(get_database_setup):
     _, result, test_input = get_database_setup
     assert result == test_input
+
+
+@pytest.fixture
+def get_database_user_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_database_user("test")
+    captured = capsys.readouterr().out
+    return captured, result, test_input
+
+
+def test_get_database_user_show_message(get_database_user_setup):
+    captured, _, _ = get_database_user_setup
+    assert "for your test environment database?" in captured
+
+
+def test_get_database_user_gets_input(get_database_user_setup):
+    _, result, test_input = get_database_user_setup
+    assert result == test_input
