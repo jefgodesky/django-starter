@@ -103,3 +103,22 @@ def test_get_repo_gets_default(monkeypatch):
     monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_repo(default_value)
     assert result == default_value
+
+
+@pytest.fixture
+def get_deployer_setup(monkeypatch, capsys):
+    test_input = "Test"
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    result = prompts.get_deployer()
+    captured = capsys.readouterr().out
+    return captured, result, test_input
+
+
+def test_get_deployer_show_message(get_deployer_setup):
+    captured, _, _ = get_deployer_setup
+    assert "You’ll want to create a non-root user" in captured
+
+
+def test_get_deployer_gets_input(get_deployer_setup):
+    _, result, test_input = get_deployer_setup
+    assert result == test_input
