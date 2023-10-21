@@ -4,6 +4,7 @@ test_example = """from pathlib import Path
 
 SECRET_KEY = "secret"
 DEBUG = True
+ALLOWED_HOSTS = []
 
 DATABASES = {
 }
@@ -66,3 +67,9 @@ def test_set_secret_key():
 def test_set_debug():
     actual = settings.set_debug(test_example)
     assert 'DEBUG = int(os.environ.get("DEBUG", default=1))' in actual
+
+
+def test_set_allowed_hosts():
+    actual = settings.set_allowed_hosts(test_example)
+    expected = 'ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")'
+    assert expected in actual

@@ -61,3 +61,9 @@ def set_debug(settings: str):
     find = r"DEBUG = (.*)\n"
     replacement = 'DEBUG = int(os.environ.get("DEBUG", default=1))'
     return re.sub(find, replacement, settings)
+
+
+def set_allowed_hosts(settings: str):
+    find = r"ALLOWED_HOSTS = \[\]"
+    replacement = 'ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")'
+    return re.sub(find, replacement, settings)
