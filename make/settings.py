@@ -55,3 +55,9 @@ def set_secret_key(settings: str):
     find = r'SECRET_KEY = "(.*)"'
     replacement = 'SECRET_KEY = os.environ.get("SECRET_KEY")'
     return re.sub(find, replacement, settings)
+
+
+def set_debug(settings: str):
+    find = r"DEBUG = (.*)\n"
+    replacement = 'DEBUG = int(os.environ.get("DEBUG", default=1))'
+    return re.sub(find, replacement, settings)
