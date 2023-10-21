@@ -164,3 +164,30 @@ def test_change_pytest_ini_args(monkeypatch):
         "src/pytest.ini",
         [("PROJECT", project_name)],
     )
+
+
+def test_make_env_args(monkeypatch):
+    replace_in_file_mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", replace_in_file_mock)
+    files.make_env(
+        env="env",
+        db="db",
+        db_user="db_user",
+        db_password="db_password",
+        secret_key="test",
+        debug=1,
+    )
+    replace_in_file_mock.assert_called_once_with(
+        "docker/.env.example",
+        [
+            ("DEBUG=1", "DEBUG=1"),
+            ("SECRET_KEY=your_secret_key_here", "SECRET_KEY=test"),
+            ("SQL_DATABASE=myproject_db", "SQL_DATABASE=db"),
+            ("SQL_USER=django_db_user", "SQL_USER=db_user"),
+            ("SQL_PASSWORD=password", "SQL_PASSWORD=db_password"),
+            ("POSTGRES_DB=myproject_db", "POSTGRES_DB=db"),
+            ("POSTGRES_USER=django_db_user", "POSTGRES_USER=db_user"),
+            ("POSTGRES_PASSWORD=password", "POSTGRES_PASSWORD=db_password"),
+        ],
+        dest="docker/.env.env",
+    )
