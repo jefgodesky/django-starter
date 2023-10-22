@@ -261,6 +261,25 @@ def test_change_scripts_down(change_scripts_setup):
     mock.assert_any_call("down.sh", [("PROJECT", project_name)])
 
 
+@pytest.fixture
+def change_urls_setup(monkeypatch):
+    mock = MagicMock()
+    monkeypatch.setattr(files, "replace_in_file", mock)
+    project_name = "myproject"
+    files.change_urls(project_name)
+    return mock, project_name
+
+
+def test_change_urls(change_urls_setup):
+    mock, project_name = change_urls_setup
+    replacement = (
+        f'app_name = "{project_name}"' + os.linesep + os.linesep + "urlpatterns = ["
+    )
+    mock.assert_called_once_with(
+        f"./src/{project_name}/urls.py", [(r"urlpatterns = \[", replacement)]
+    )
+
+
 def test_change_settings_open_file(mock_file):
     mock_file().read.return_value = ""
     files.change_settings("settings.py", "users")

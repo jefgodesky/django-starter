@@ -172,6 +172,17 @@ def change_scripts(project: str):
     replace_in_file("down.sh", replacements)
 
 
+def change_urls(project: str):
+    anchor = "urlpatterns = ["
+    app_name = f'app_name = "{project}"'
+    replacement = app_name + os.linesep + os.linesep + anchor
+    replacements = [
+        (r"urlpatterns = \[", replacement),
+    ]
+
+    replace_in_file(f"./src/{project}/urls.py", replacements)
+
+
 def change_settings(filename: str, users: str):
     with open(filename) as file:
         contents = file.read()
