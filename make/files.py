@@ -51,6 +51,28 @@ class UserAccount(AbstractUser):
         file.write(content)
 
 
+def create_users_forms(users: str):
+    content = """from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
+from .models import CustomUser
+
+class UserAccountCreationForm(UserCreationForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email")
+
+class UserAccountChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email")
+"""
+
+    with open(f"./src/{users}/forms.py", "w") as file:
+        file.write(content)
+
+
 def change_cd_workflow(project: str, droplet_user: str):
     workflow_directory = "./.github/workflows"
     if not os.path.exists(workflow_directory):
