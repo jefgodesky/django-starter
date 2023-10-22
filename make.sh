@@ -6,12 +6,12 @@ pip install -r requirements.dev.txt
 pip install GitPython
 cd ..
 clear
-python make.py
+python make/run.py
 deactivate
 clear
 rm -Rf src/env
-rm -f make.py
+rm -Rf make
 rm -f cd.yml
-echo "Your Django project is ready to go!"
+echo "\033[1mYour Django project is ready to go!\033[0m"
 echo "Visit https://github.com/jefgodesky/django-starter/wiki for ideas on next steps."
 rm -- "$0"
