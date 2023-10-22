@@ -61,7 +61,7 @@ def main():
             db=environments[env]["db"],
             db_user=environments[env]["db_user"],
             db_password=environments[env]["db_password"],
-            debug=environments[env]["db_debug"],
+            debug=environments[env]["debug"],
         )
 
 
