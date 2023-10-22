@@ -1,6 +1,7 @@
 import os
 import re
 
+import settings
 from django.core.management.utils import get_random_secret_key
 
 
@@ -169,3 +170,20 @@ def change_scripts(project: str):
 
     replace_in_file("up.sh", replacements)
     replace_in_file("down.sh", replacements)
+
+
+def change_settings(filename: str, users: str):
+    with open(filename) as file:
+        contents = file.read()
+
+    contents = settings.add_installed_apps(contents, users)
+    contents = settings.change_database_settings(contents)
+    contents = settings.add_new_settings(contents, users)
+    contents = settings.add_import_os(contents)
+    contents = settings.set_secret_key(contents)
+    contents = settings.set_debug(contents)
+    contents = settings.set_allowed_hosts(contents)
+    contents = settings.add_prod_rest_framework_renderer(contents)
+
+    with open(filename, "w") as file:
+        file.write(contents)

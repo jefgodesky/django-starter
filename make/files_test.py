@@ -259,3 +259,20 @@ def test_change_scripts_up(change_scripts_setup):
 def test_change_scripts_down(change_scripts_setup):
     mock, project_name = change_scripts_setup
     mock.assert_any_call("down.sh", [("PROJECT", project_name)])
+
+
+def test_change_settings_open_file(mock_file):
+    mock_file().read.return_value = ""
+    files.change_settings("settings.py", "users")
+    args = mock_file.call_args_list[1][0]
+    assert args[0] == "settings.py"
+    assert len(args) == 1
+
+
+def test_change_settings_write_file(mock_file):
+    mock_file().read.return_value = ""
+    files.change_settings("settings.py", "users")
+    args = mock_file.call_args_list[2][0]
+    assert args[0] == "settings.py"
+    assert args[1] == "w"
+    assert len(args) == 2
