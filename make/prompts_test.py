@@ -301,3 +301,33 @@ def get_environment_settings_dictionary(get_environment_settings_setup):
     assert result["db_user"] == test_input
     assert result["db_password"] == test_password
     assert result["debug"] is True
+
+
+def test_get_env_dict():
+    debug_env = ["dev", "test"]
+    prod_env = ["green", "blue"]
+    actual = prompts.get_env_dict(debug=debug_env, prod=prod_env)
+
+    assert actual["dev"]["env"] == "dev"
+    assert actual["dev"]["db"] is None
+    assert actual["dev"]["db_user"] is None
+    assert actual["dev"]["db_password"] is None
+    assert actual["dev"]["debug"] is True
+
+    assert actual["test"]["env"] == "test"
+    assert actual["test"]["db"] is None
+    assert actual["test"]["db_user"] is None
+    assert actual["test"]["db_password"] is None
+    assert actual["test"]["debug"] is True
+
+    assert actual["green"]["env"] == "green"
+    assert actual["green"]["db"] is None
+    assert actual["green"]["db_user"] is None
+    assert actual["green"]["db_password"] is None
+    assert actual["green"]["debug"] is False
+
+    assert actual["blue"]["env"] == "blue"
+    assert actual["blue"]["db"] is None
+    assert actual["blue"]["db_user"] is None
+    assert actual["blue"]["db_password"] is None
+    assert actual["blue"]["debug"] is False

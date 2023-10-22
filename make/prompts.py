@@ -86,6 +86,18 @@ def get_starter_env(env: str, debug=False):
     }
 
 
+def get_env_dict(debug=[], prod=[]):
+    environments = {}
+
+    for env in debug:
+        environments[env] = get_starter_env(env, debug=True)
+
+    for env in prod:
+        environments[env] = get_starter_env(env)
+
+    return environments
+
+
 def get_environment_settings(env: dict):
     name = env["env"]
     env["db"] = get_database(name)
