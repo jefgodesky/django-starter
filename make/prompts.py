@@ -74,3 +74,13 @@ def get_prod_environments():
     prompt_text = "Debugging environments (prod): "
     user_input = prompt(msg, prompt_text) or "prod"
     return [env.strip() for env in user_input.split(",")]
+
+
+def get_starter_env(env: str, debug=False):
+    return {
+        "env": env,
+        "db": None,
+        "db_user": None,
+        "db_password": None,
+        "debug": debug,
+    }

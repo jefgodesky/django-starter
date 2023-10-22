@@ -260,3 +260,23 @@ def test_get_prod_environments_gets_default(monkeypatch):
     monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_prod_environments()
     assert result == ["prod"]
+
+
+def test_get_starter_env_debug():
+    env = "test"
+    actual = prompts.get_starter_env(env, debug=True)
+    assert actual["env"] == env
+    assert actual["db"] is None
+    assert actual["db_user"] is None
+    assert actual["db_password"] is None
+    assert actual["debug"] is True
+
+
+def test_get_starter_env_prod():
+    env = "prod"
+    actual = prompts.get_starter_env(env)
+    assert actual["env"] == env
+    assert actual["db"] is None
+    assert actual["db_user"] is None
+    assert actual["db_password"] is None
+    assert actual["debug"] is False
