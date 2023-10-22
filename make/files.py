@@ -34,47 +34,17 @@ def exempt_long_lines(filename: str):
         file.writelines(modified_lines)
 
 
-def create_users_model_tests(users: str):
-    content = """import pytest
-import datetime
-from django.utils import timezone
-from .models import UserAccount
-
-
-@pytest.mark.django_db
-def test_active_default():
-    account = UserAccount()
-    assert account.is_active is True
-
-
-@pytest.mark.django_db
-def test_created_default():
-    before = timezone.now()
-    account = UserAccount()
-    after = timezone.now()
-    assert isinstance(account.created, datetime.datetime)
-    assert before <= account.created
-    assert after >= account.created
-"""
-
-    with open(f"./src/{users}/models_test.py", "w") as file:
-        file.write(content)
-
-
 def create_users_model(users: str):
-    content = """from django.contrib.auth.models import AbstractBaseUser
+    content = """from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 
 
-class UserAccount(AbstractBaseUser):
-    username = models.TextField(blank=False, unique=True)
-    is_active = models.BooleanField(default=True)
-    created = models.DateTimeField(default=timezone.now)
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = [
-        "is_active",
-    ]
+class UserAccount(AbstractUser):
+    pass
+
+    def __str__(self):
+      return self.username
 """
 
     with open(f"./src/{users}/models.py", "w") as file:
