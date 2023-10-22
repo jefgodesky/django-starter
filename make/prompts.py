@@ -104,3 +104,12 @@ def get_environment_settings(env: dict):
     env["db_user"] = get_database_user(name)
     env["db_password"] = get_database_password(name)
     return env
+
+
+def prompt_environment_variables(debug=[], prod=[]):
+    dictionary = get_env_dict(debug=debug, prod=prod)
+
+    for env in dictionary:
+        dictionary[env] = get_environment_settings(dictionary[env])
+
+    return dictionary

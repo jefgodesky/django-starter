@@ -331,3 +331,44 @@ def test_get_env_dict():
     assert actual["blue"]["db_user"] is None
     assert actual["blue"]["db_password"] is None
     assert actual["blue"]["debug"] is False
+
+
+@pytest.fixture
+def prompt_environment_variables_setup(monkeypatch):
+    test_input = "test"
+    test_password = "password"
+    debug = ["dev", "test"]
+    prod = ["green", "blue"]
+    monkeypatch.setattr(prompts, "getpass", lambda _: test_password)
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    monkeypatch.setattr("builtins.print", lambda _: None)
+    result = prompts.prompt_environment_variables(debug=debug, prod=prod)
+    return result, test_input, test_password
+
+
+def test_prompt_environment_variables(prompt_environment_variables_setup):
+    result, test_input, test_password = prompt_environment_variables_setup
+
+    assert result["dev"]["env"] == "dev"
+    assert result["dev"]["db"] == test_input
+    assert result["dev"]["db_user"] == test_input
+    assert result["dev"]["db_password"] == test_password
+    assert result["dev"]["debug"] is True
+
+    assert result["test"]["env"] == "test"
+    assert result["test"]["db"] == test_input
+    assert result["test"]["db_user"] == test_input
+    assert result["test"]["db_password"] == test_password
+    assert result["test"]["debug"] is True
+
+    assert result["green"]["env"] == "green"
+    assert result["green"]["db"] == test_input
+    assert result["green"]["db_user"] == test_input
+    assert result["green"]["db_password"] == test_password
+    assert result["green"]["debug"] is False
+
+    assert result["blue"]["env"] == "blue"
+    assert result["blue"]["db"] == test_input
+    assert result["blue"]["db_user"] == test_input
+    assert result["blue"]["db_password"] == test_password
+    assert result["blue"]["debug"] is False
