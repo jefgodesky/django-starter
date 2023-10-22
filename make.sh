@@ -12,6 +12,6 @@ clear
 rm -Rf src/env
 rm -Rf make
 rm -f cd.yml
-echo "\033[1mYour Django project is ready to go!\033[0m"
+echo "${bold}Your Django project is ready to go!${normal}"
 echo "Visit https://github.com/jefgodesky/django-starter/wiki for ideas on next steps."
 rm -- "$0"
