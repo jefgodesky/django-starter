@@ -280,3 +280,24 @@ def test_get_starter_env_prod():
     assert actual["db_user"] is None
     assert actual["db_password"] is None
     assert actual["debug"] is False
+
+
+@pytest.fixture
+def get_environment_settings_setup(monkeypatch, capfd):
+    test_input = "test"
+    test_password = "password"
+    monkeypatch.setattr(prompts, "getpass", lambda _: test_password)
+    monkeypatch.setattr("builtins.input", lambda _: test_input)
+    dictionary = prompts.get_starter_env(test_input, debug=True)
+    result = prompts.get_environment_settings(dictionary)
+    out, err = capfd.readouterr()
+    return result, test_input, test_password
+
+
+def get_environment_settings_dictionary(get_environment_settings_setup):
+    result, test_input, test_password = get_environment_settings_setup
+    assert result["env"] == test_input
+    assert result["db"] == test_input
+    assert result["db_user"] == test_input
+    assert result["db_password"] == test_password
+    assert result["debug"] is True

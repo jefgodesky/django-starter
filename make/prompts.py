@@ -84,3 +84,11 @@ def get_starter_env(env: str, debug=False):
         "db_password": None,
         "debug": debug,
     }
+
+
+def get_environment_settings(env: dict):
+    name = env["env"]
+    env["db"] = get_database(name)
+    env["db_user"] = get_database_user(name)
+    env["db_password"] = get_database_password(name)
+    return env
