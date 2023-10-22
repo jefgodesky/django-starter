@@ -73,6 +73,26 @@ class UserAccountChangeForm(UserChangeForm):
         file.write(content)
 
 
+def create_users_admin(users: str):
+    content = """from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
+from .forms import UserAccountCreationForm, UserAccountChangeForm
+from .models import UserAccount
+
+class UserAccountAdmin(UserAdmin):
+    add_form = UserAccountCreationForm
+    form = UserAccountChangeForm
+    model = UserAccount
+    list_display = ["username"]
+
+admin.site.register(UserAccount, UserAccountAdmin)
+"""
+
+    with open(f"./src/{users}/admin.py", "w") as file:
+        file.write(content)
+
+
 def change_cd_workflow(project: str, droplet_user: str):
     workflow_directory = "./.github/workflows"
     if not os.path.exists(workflow_directory):

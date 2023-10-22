@@ -99,6 +99,19 @@ def test_create_users_forms_filename(mock_file):
     assert args[1] == "w"
 
 
+def test_create_users_admin_content(mock_file):
+    files.create_users_admin("users")
+    actual = mock_file().write.call_args[0][0]
+    assert "class UserAccountAdmin(UserAdmin):" in actual
+
+
+def test_create_users_admin_filename(mock_file):
+    files.create_users_admin("users")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/users/admin.py"
+    assert args[1] == "w"
+
+
 def test_change_cd_workflow_makedirs(monkeypatch):
     monkeypatch.setattr(os.path, "exists", lambda _: False)
     makedirs_mock = MagicMock()
