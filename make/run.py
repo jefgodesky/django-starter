@@ -43,7 +43,7 @@ def main():
     processes.create_django_project(project)
     processes.create_users_app(users)
 
-    files.create_users_model_tests(users)
+    files.create_users_model_test(users)
     files.create_users_model(users)
     files.change_settings(settings_file, users)
     files.exempt_long_lines(settings_file)
