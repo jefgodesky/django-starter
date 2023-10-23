@@ -216,6 +216,13 @@ def test_get_database_user_gets_input(get_database_user_setup):
     assert result == test_input
 
 
+def test_get_database_user_required(monkeypatch):
+    input_generator = iter(["", "db_user"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.get_database_user("test")
+    assert result == "db_user"
+
+
 @pytest.fixture
 def get_database_password_setup(monkeypatch, capfd):
     test_password = "password"
