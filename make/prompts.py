@@ -2,9 +2,12 @@ from getpass import getpass
 from inspect import cleandoc
 
 
-def prompt(msg: str, prompt_text: str):
+def prompt(msg: str, prompt_text: str, required: bool = False):
     print("\n" + msg)
-    return input(prompt_text)
+    value = input(prompt_text)
+    while required and not value.strip():
+        value = input(prompt_text)
+    return value
 
 
 def prompt_password(msg: str, prompt_text: str):

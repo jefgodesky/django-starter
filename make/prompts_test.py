@@ -28,6 +28,13 @@ def test_prompt_gets_input(prompt_setup):
     assert result == test_input
 
 
+def test_prompt_requires_input(monkeypatch):
+    input_generator = iter(["", "test"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.prompt("Message", "Prompt: ", required=True)
+    assert result == "test"
+
+
 @pytest.fixture
 def prompt_password_setup(monkeypatch, capfd):
     test_msg = "Test message."
