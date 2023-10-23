@@ -73,6 +73,19 @@ def test_exempt_long_lines_gt(mock_file):
     assert actual == ["A" * 89 + "  # noqa: E501\n"]
 
 
+def test_create_users_model_test_content(mock_file):
+    files.create_users_model_test("users")
+    actual = mock_file().write.call_args[0][0]
+    assert "def create_test_user():" in actual
+
+
+def test_create_users_model_test_filename(mock_file):
+    files.create_users_model_test("users")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/users/models_test.py"
+    assert args[1] == "w"
+
+
 def test_create_users_model_content(mock_file):
     files.create_users_model("users")
     actual = mock_file().write.call_args[0][0]

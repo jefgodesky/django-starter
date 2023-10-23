@@ -34,10 +34,44 @@ def exempt_long_lines(filename: str):
         file.writelines(modified_lines)
 
 
+def create_users_model_test(users: str):
+    content = """import pytest
+from django.contrib.auth import get_user_model
+
+
+@pytest.fixture
+def create_test_user():
+    username = "tester"
+    email = "tester@testing.com"
+    password = "testpassword123"
+    user = get_user_model().objects.create_user(
+        username=username,
+        email=email,
+        password=password
+    )
+
+
+@pytest.mark.django_db
+def test_user_account_username(create_test_user):
+    assert create_test_user.username == "tester"
+
+
+@pytest.mark.django_db
+def test_user_account_email(create_test_user):
+    assert create_test_user.email == "tester@testing.com"
+
+
+@pytest.mark.django_db
+def test_user_account_str(create_test_user):
+    assert str(create_test_user.username) == "tester"
+"""
+
+    with open(f"./src/{users}/models_test.py", "w") as file:
+        file.write(content)
+
+
 def create_users_model(users: str):
     content = """from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.utils import timezone
 
 
 class UserAccount(AbstractUser):
