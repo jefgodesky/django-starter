@@ -245,3 +245,40 @@ def test_get_database_password_password_not_shown(get_database_password_setup):
 def test_get_database_password_gets_input(get_database_password_setup):
     _, _, result, test_input = get_database_password_setup
     assert result == test_input
+
+
+def test_get_api_only_shows_message(monkeypatch, capsys):
+    monkeypatch.setattr("builtins.input", lambda _: "")
+    prompts.get_api_only()
+    captured = capsys.readouterr().out
+    assert "Are you creating a standalone API?" in captured
+
+
+def test_get_api_only_defaults_false(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "x")
+    result = prompts.get_api_only()
+    assert result is False
+
+
+def test_get_api_only_takes_n(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "n")
+    result = prompts.get_api_only()
+    assert result is False
+
+
+def test_get_api_only_takes_no(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "No")
+    result = prompts.get_api_only()
+    assert result is False
+
+
+def test_get_api_only_takes_y(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "y")
+    result = prompts.get_api_only()
+    assert result is True
+
+
+def test_get_api_only_takes_yes(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "YeS")
+    result = prompts.get_api_only()
+    assert result is True

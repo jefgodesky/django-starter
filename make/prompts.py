@@ -66,3 +66,14 @@ def get_database_password(env: str):
     msg = f"{msg_before} {env} environment database?"
     prompt_text = f"{env.capitalize()} database user password: "
     return prompt_password(cleandoc(msg), prompt_text)
+
+
+def get_api_only():
+    msg = """Are you creating a standalone API? If yes, we’ll start a new API
+        project. If no, we’ll start a new project that’s set up to be built
+        API-first, but will also contain templates for traditional HTML
+        responses using the same models."""
+    prompt_text = "Standalone API? [y/N]: "
+    affirmations = ["y", "yes"]
+    value = prompt(cleandoc(msg), prompt_text)
+    return True if value.lower() in affirmations else False
