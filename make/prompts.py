@@ -51,7 +51,7 @@ def get_database(env: str):
     msg_before = "What is the name of the database that you would like to use in your"
     msg = f"{msg_before} {env} environment?"
     prompt_text = f"{env.capitalize()} database: "
-    return prompt(cleandoc(msg), prompt_text)
+    return prompt(cleandoc(msg), prompt_text, required=True)
 
 
 def get_database_user(env: str):

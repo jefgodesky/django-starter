@@ -190,6 +190,13 @@ def test_get_database_gets_input(get_database_setup):
     assert result == test_input
 
 
+def test_get_database_required(monkeypatch):
+    input_generator = iter(["", "db"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.get_database("test")
+    assert result == "db"
+
+
 @pytest.fixture
 def get_database_user_setup(monkeypatch, capsys):
     test_input = "Test"
