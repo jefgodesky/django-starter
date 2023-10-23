@@ -138,6 +138,13 @@ def test_get_deployer_gets_input(get_deployer_setup):
     assert result == test_input
 
 
+def test_get_deployer_required(monkeypatch):
+    input_generator = iter(["", "d"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.get_deployer()
+    assert result == "d"
+
+
 @pytest.fixture
 def get_users_appname_setup(monkeypatch, capsys):
     test_input = "Test"

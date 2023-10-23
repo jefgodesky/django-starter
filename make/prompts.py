@@ -38,7 +38,7 @@ def get_deployer():
       This should be an account separate from any human user, one dedicated entirely
       to automated, continuous delivery. What is this user’s user name?"""
     prompt_text = "Deployment username: "
-    return prompt(cleandoc(msg), prompt_text)
+    return prompt(cleandoc(msg), prompt_text, required=True)
 
 
 def get_users_appname():
