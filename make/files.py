@@ -60,13 +60,13 @@ class UserAccountCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ("username", "email")
+        fields = ("username")
 
 class UserAccountChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ("username", "email")
+        fields = ("username")
 """
 
     with open(f"./src/{users}/forms.py", "w") as file:
