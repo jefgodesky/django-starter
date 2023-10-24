@@ -229,13 +229,13 @@ def change_urls(project: str):
     replace_in_file(f"./src/{project}/urls.py", replacements)
 
 
-def change_settings(filename: str, users: str):
+def change_settings(filename: str, users: str, api_only: bool = False):
     with open(filename) as file:
         contents = file.read()
 
     contents = settings.add_installed_apps(contents, users)
     contents = settings.change_database_settings(contents)
-    contents = settings.add_new_settings(contents, users)
+    contents = settings.add_new_settings(contents, users, api_only=api_only)
     contents = settings.add_import_os(contents)
     contents = settings.set_secret_key(contents)
     contents = settings.set_debug(contents)
