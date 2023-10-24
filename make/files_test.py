@@ -74,6 +74,7 @@ def test_exempt_long_lines_gt(mock_file):
 
 
 def test_create_users_model_test_content(mock_file):
+    mock_file().read.return_value = "def create_test_user():"
     files.create_users_model_test("users")
     actual = mock_file().write.call_args[0][0]
     assert "def create_test_user():" in actual
@@ -87,6 +88,7 @@ def test_create_users_model_test_filename(mock_file):
 
 
 def test_create_users_model_content(mock_file):
+    mock_file().read.return_value = "class UserAccount(AbstractUser):"
     files.create_users_model("users")
     actual = mock_file().write.call_args[0][0]
     assert "class UserAccount(AbstractUser):" in actual
@@ -100,6 +102,7 @@ def test_create_users_model_filename(mock_file):
 
 
 def test_create_users_forms_content(mock_file):
+    mock_file().read.return_value = "class UserAccountCreationForm(UserCreationForm):"
     files.create_users_forms("users")
     actual = mock_file().write.call_args[0][0]
     assert "class UserAccountCreationForm(UserCreationForm):" in actual
@@ -113,6 +116,7 @@ def test_create_users_forms_filename(mock_file):
 
 
 def test_create_users_admin_content(mock_file):
+    mock_file().read.return_value = "class UserAccountAdmin(UserAdmin):"
     files.create_users_admin("users")
     actual = mock_file().write.call_args[0][0]
     assert "class UserAccountAdmin(UserAdmin):" in actual

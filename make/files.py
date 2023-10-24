@@ -35,96 +35,19 @@ def exempt_long_lines(filename: str):
 
 
 def create_users_model_test(users: str):
-    content = """import pytest
-from django.contrib.auth import get_user_model
-
-
-@pytest.fixture
-def create_test_user():
-    username = "tester"
-    email = "tester@testing.com"
-    password = "testpassword123"
-    user = get_user_model().objects.create_user(
-        username=username,
-        email=email,
-        password=password
-    )
-
-
-@pytest.mark.django_db
-def test_user_account_username(create_test_user):
-    assert create_test_user.username == "tester"
-
-
-@pytest.mark.django_db
-def test_user_account_email(create_test_user):
-    assert create_test_user.email == "tester@testing.com"
-
-
-@pytest.mark.django_db
-def test_user_account_str(create_test_user):
-    assert str(create_test_user.username) == "tester"
-"""
-
-    with open(f"./src/{users}/models_test.py", "w") as file:
-        file.write(content)
+    replace_in_file("users/models_test.py", [], dest=f"./src/{users}/models_test.py")
 
 
 def create_users_model(users: str):
-    content = """from django.contrib.auth.models import AbstractUser
-
-
-class UserAccount(AbstractUser):
-    pass
-
-    def __str__(self):
-      return self.username
-"""
-
-    with open(f"./src/{users}/models.py", "w") as file:
-        file.write(content)
+    replace_in_file("users/models.py", [], dest=f"./src/{users}/models.py")
 
 
 def create_users_forms(users: str):
-    content = """from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
-from .models import CustomUser
-
-class UserAccountCreationForm(UserCreationForm):
-
-    class Meta:
-        model = CustomUser
-        fields = ("username")
-
-class UserAccountChangeForm(UserChangeForm):
-
-    class Meta:
-        model = CustomUser
-        fields = ("username")
-"""
-
-    with open(f"./src/{users}/forms.py", "w") as file:
-        file.write(content)
+    replace_in_file("users/forms.py", [], dest=f"./src/{users}/forms.py")
 
 
 def create_users_admin(users: str):
-    content = """from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-
-from .forms import UserAccountCreationForm, UserAccountChangeForm
-from .models import UserAccount
-
-class UserAccountAdmin(UserAdmin):
-    add_form = UserAccountCreationForm
-    form = UserAccountChangeForm
-    model = UserAccount
-    list_display = ["username"]
-
-admin.site.register(UserAccount, UserAccountAdmin)
-"""
-
-    with open(f"./src/{users}/admin.py", "w") as file:
-        file.write(content)
+    replace_in_file("users/admin.py", [], dest=f"./src/{users}/admin.py")
 
 
 def change_cd_workflow(project: str, droplet_user: str):
