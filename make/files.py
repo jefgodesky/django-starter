@@ -35,19 +35,20 @@ def exempt_long_lines(filename: str):
 
 
 def create_users_model_test(users: str):
-    replace_in_file("users/models_test.py", [], dest=f"./src/{users}/models_test.py")
+    dest = f"./src/{users}/models_test.py"
+    replace_in_file("make/users/models_test.py", [], dest=dest)
 
 
 def create_users_model(users: str):
-    replace_in_file("users/models.py", [], dest=f"./src/{users}/models.py")
+    replace_in_file("make/users/models.py", [], dest=f"./src/{users}/models.py")
 
 
 def create_users_forms(users: str):
-    replace_in_file("users/forms.py", [], dest=f"./src/{users}/forms.py")
+    replace_in_file("make/users/forms.py", [], dest=f"./src/{users}/forms.py")
 
 
 def create_users_admin(users: str):
-    replace_in_file("users/admin.py", [], dest=f"./src/{users}/admin.py")
+    replace_in_file("make/users/admin.py", [], dest=f"./src/{users}/admin.py")
 
 
 def change_cd_workflow(project: str, droplet_user: str):
