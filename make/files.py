@@ -51,6 +51,32 @@ def create_users_admin(users: str):
     replace_in_file("make/users/admin.py", [], dest=f"./src/{users}/admin.py")
 
 
+def create_base_template(project: str):
+    replacements = [(r"PROJECT", project)]
+    src = "make/templates/base.html"
+    dest = f"./src/{project}/templates/base.html"
+    replace_in_file(src, replacements, dest=dest)
+
+
+def create_home_template(project: str):
+    replacements = [(r"PROJECT", project)]
+    src = "make/templates/home.html"
+    dest = f"./src/{project}/templates/home.html"
+    replace_in_file(src, replacements, dest=dest)
+
+
+def create_login_template(project: str):
+    src = "make/templates/registration/login.html"
+    dest = f"./src/{project}/templates/registration/login.html"
+    replace_in_file(src, [], dest=dest)
+
+
+def create_signup_template(project: str):
+    src = "make/templates/registration/signup.html"
+    dest = f"./src/{project}/templates/registration/signup.html"
+    replace_in_file(src, [], dest=dest)
+
+
 def change_cd_workflow(project: str, droplet_user: str):
     workflow_directory = "./.github/workflows"
     if not os.path.exists(workflow_directory):

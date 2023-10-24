@@ -129,6 +129,67 @@ def test_create_users_admin_filename(mock_file):
     assert args[1] == "w"
 
 
+def test_create_base_template_content(mock_file):
+    title = "<title>{% block title %}PROJECT{% endblock %}</title>"
+    mock_file().read.return_value = title
+    files.create_base_template("myproject")
+    actual = mock_file().write.call_args[0][0]
+    expected = "<title>{% block title %}myproject{% endblock %}</title>"
+    assert expected in actual
+
+
+def test_create_base_template_filename(mock_file):
+    files.create_base_template("myproject")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/myproject/templates/base.html"
+    assert args[1] == "w"
+
+
+def test_create_home_template_content(mock_file):
+    mock_file().read.return_value = "<h1>PROJECT</h1>"
+    files.create_home_template("myproject")
+    actual = mock_file().write.call_args[0][0]
+    expected = "<h1>myproject</h1>"
+    assert expected in actual
+
+
+def test_create_home_template_filename(mock_file):
+    files.create_home_template("myproject")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/myproject/templates/home.html"
+    assert args[1] == "w"
+
+
+def test_login_template_content(mock_file):
+    mock_file().read.return_value = "<h1>Log In</h1>"
+    files.create_login_template("myproject")
+    actual = mock_file().write.call_args[0][0]
+    expected = "<h1>Log In</h1>"
+    assert expected in actual
+
+
+def test_login_template_filename(mock_file):
+    files.create_login_template("myproject")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/myproject/templates/registration/login.html"
+    assert args[1] == "w"
+
+
+def test_signup_template_content(mock_file):
+    mock_file().read.return_value = "<h1>Create an Account</h1>"
+    files.create_signup_template("myproject")
+    actual = mock_file().write.call_args[0][0]
+    expected = "<h1>Create an Account</h1>"
+    assert expected in actual
+
+
+def test_signup_template_filename(mock_file):
+    files.create_signup_template("myproject")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/myproject/templates/registration/signup.html"
+    assert args[1] == "w"
+
+
 def test_change_cd_workflow_makedirs(monkeypatch):
     monkeypatch.setattr(os.path, "exists", lambda _: False)
     makedirs_mock = MagicMock()
