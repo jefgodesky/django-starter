@@ -16,7 +16,8 @@ def add_installed_apps(settings: str, users: str):
 
 
 def change_database_settings(settings: str):
-    match_databases = re.search(r"DATABASES = {[^}]*}", settings, flags=re.DOTALL)
+    pattern = r"DATABASES = {(\s*)'default': {([\S\s]*)\}"
+    match_databases = re.search(pattern, settings, flags=re.DOTALL)
     if not match_databases:
         return settings
     databases = """{

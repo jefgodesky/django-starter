@@ -1,3 +1,4 @@
+import pytest
 import settings
 
 test_example = """from pathlib import Path
@@ -7,6 +8,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 INSTALLED_APPS = [
@@ -29,7 +34,8 @@ def test_add_installed_apps_adds_users():
     assert '"users",' in actual
 
 
-def test_change_database_settings():
+@pytest.fixture
+def change_database_setup():
     actual = settings.change_database_settings(test_example)
     expected = """DATABASES = {
     "default": {
@@ -41,7 +47,18 @@ def test_change_database_settings():
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }"""
+    return actual, expected
+
+
+def test_change_database_settings(change_database_setup):
+    actual, expected = change_database_setup
     assert expected in actual
+
+
+def test_change_database_settings_not_double_closed(change_database_setup):
+    actual, expected = change_database_setup
+    expected = expected + "\n}"
+    assert expected not in actual
 
 
 def test_add_new_settings_users():
