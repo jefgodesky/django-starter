@@ -108,6 +108,26 @@ def test_add_new_settings_siteid():
     assert "SITE_ID = 1" in actual
 
 
+def test_add_new_settings_login_redirect():
+    actual = settings.add_new_settings(test_example, "users")
+    assert 'LOGIN_REDIRECT_URL = "home"' in actual
+
+
+def test_add_new_settings_logout_redirect():
+    actual = settings.add_new_settings(test_example, "users")
+    assert 'LOGOUT_REDIRECT_URL = "home"' in actual
+
+
+def test_add_new_settings_no_login_redirect():
+    actual = settings.add_new_settings(test_example, "users", api_only=True)
+    assert "LOGIN_REDIRECT_URL" not in actual
+
+
+def test_add_new_settings_no_logout_redirect():
+    actual = settings.add_new_settings(test_example, "users", api_only=True)
+    assert "LOGOUT_REDIRECT_URL" not in actual
+
+
 def test_add_import_os():
     actual = actual = settings.add_import_os(test_example)
     assert "import os" in actual

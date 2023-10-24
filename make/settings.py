@@ -48,9 +48,12 @@ def set_project_template_dir(settings: str):
     return settings.replace(match_templates.group(0), updated_templates)
 
 
-def add_new_settings(settings: str, users: str):
+def add_new_settings(settings: str, users: str, api_only: bool = False):
     new_settings_anchor = "from pathlib import Path"
     new_settings = [f'AUTH_USER_MODEL = "{users}.UserAccount"', "SITE_ID = 1"]
+    if not api_only:
+        new_settings.append('LOGIN_REDIRECT_URL = "home"')
+        new_settings.append('LOGOUT_REDIRECT_URL = "home"')
     new_settings_string = (
         new_settings_anchor
         + os.linesep
