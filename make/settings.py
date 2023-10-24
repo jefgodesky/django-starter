@@ -33,6 +33,21 @@ def change_database_settings(settings: str):
     return settings.replace(match_databases.group(0), f"DATABASES = {databases}")
 
 
+def set_project_template_dir(settings: str):
+    templates_pattern = r"TEMPLATES = \[(\s*){[\s\S]*},?(\s)*]"
+    match_templates = re.search(templates_pattern, settings, flags=re.DOTALL)
+    if not match_templates:
+        return settings
+    dirs_pattern = r"['|\"]DIRS['|\"]: \[\]"
+    match_dirs = re.search(dirs_pattern, match_templates.group(0), flags=re.DOTALL)
+    if not match_dirs:
+        return settings
+    dirs_update = '"DIRS": [BASE_DIR / "templates"]'
+    updated_templates = match_templates.group(0).replace("'DIRS': []", dirs_update)
+    updated_templates = updated_templates.replace('"DIRS": []', dirs_update)
+    return settings.replace(match_templates.group(0), updated_templates)
+
+
 def add_new_settings(settings: str, users: str):
     new_settings_anchor = "from pathlib import Path"
     new_settings = [f'AUTH_USER_MODEL = "{users}.UserAccount"', "SITE_ID = 1"]
