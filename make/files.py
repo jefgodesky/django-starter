@@ -65,15 +65,15 @@ def create_home_template(project: str):
     replace_in_file(src, replacements, dest=dest)
 
 
-def create_login_template(project: str):
-    src = "make/templates/registration/login.html"
-    dest = f"./src/{project}/templates/registration/login.html"
+def create_login_template(users: str):
+    src = "make/users/templates/login.html"
+    dest = f"./src/{users}/templates/login.html"
     replace_in_file(src, [], dest=dest)
 
 
-def create_signup_template(project: str):
-    src = "make/templates/registration/signup.html"
-    dest = f"./src/{project}/templates/registration/signup.html"
+def create_register_template(users: str):
+    src = "make/users/templates/register.html"
+    dest = f"./src/{users}/templates/register.html"
     replace_in_file(src, [], dest=dest)
 
 

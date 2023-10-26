@@ -162,31 +162,31 @@ def test_create_home_template_filename(mock_file):
 
 def test_login_template_content(mock_file):
     mock_file().read.return_value = "<h1>Log In</h1>"
-    files.create_login_template("myproject")
+    files.create_login_template("users")
     actual = mock_file().write.call_args[0][0]
     expected = "<h1>Log In</h1>"
     assert expected in actual
 
 
 def test_login_template_filename(mock_file):
-    files.create_login_template("myproject")
+    files.create_login_template("users")
     args = mock_file.call_args[0]
-    assert args[0] == "./src/myproject/templates/registration/login.html"
+    assert args[0] == "./src/users/templates/login.html"
     assert args[1] == "w"
 
 
 def test_signup_template_content(mock_file):
     mock_file().read.return_value = "<h1>Create an Account</h1>"
-    files.create_signup_template("myproject")
+    files.create_register_template("users")
     actual = mock_file().write.call_args[0][0]
     expected = "<h1>Create an Account</h1>"
     assert expected in actual
 
 
 def test_signup_template_filename(mock_file):
-    files.create_signup_template("myproject")
+    files.create_register_template("users")
     args = mock_file.call_args[0]
-    assert args[0] == "./src/myproject/templates/registration/signup.html"
+    assert args[0] == "./src/users/templates/register.html"
     assert args[1] == "w"
 
 
