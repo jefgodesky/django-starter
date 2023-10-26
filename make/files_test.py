@@ -141,13 +141,13 @@ def test_create_users_admin_filename(mock_file):
 def test_create_users_urls_content(mock_file):
     expected = 'path("register/", RegisterView.as_view(), name="register"),'
     mock_file().read.return_value = expected
-    files.create_users_admin("users")
+    files.create_users_urls("users")
     actual = mock_file().write.call_args[0][0]
     assert expected in actual
 
 
 def test_create_users_urls_filename(mock_file):
-    files.create_users_admin("users")
+    files.create_users_urls("users")
     args = mock_file.call_args[0]
     assert args[0] == "./src/users/urls.py"
     assert args[1] == "w"
