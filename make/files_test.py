@@ -1,8 +1,17 @@
 import os
+import re
 from unittest.mock import MagicMock, mock_open
 
 import files
 import pytest
+
+urls_py_content = """from django.contrib import admin
+from django.urls import path
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+"""
 
 
 @pytest.fixture
@@ -126,6 +135,21 @@ def test_create_users_admin_filename(mock_file):
     files.create_users_admin("users")
     args = mock_file.call_args[0]
     assert args[0] == "./src/users/admin.py"
+    assert args[1] == "w"
+
+
+def test_create_users_urls_content(mock_file):
+    expected = 'path("register/", RegisterView.as_view(), name="register"),'
+    mock_file().read.return_value = expected
+    files.create_users_admin("users")
+    actual = mock_file().write.call_args[0][0]
+    assert expected in actual
+
+
+def test_create_users_urls_filename(mock_file):
+    files.create_users_admin("users")
+    args = mock_file.call_args[0]
+    assert args[0] == "./src/users/urls.py"
     assert args[1] == "w"
 
 
@@ -352,23 +376,92 @@ def test_change_scripts_down(change_scripts_setup):
     mock.assert_any_call("down.sh", [("PROJECT", project_name)])
 
 
-@pytest.fixture
-def change_urls_setup(monkeypatch):
-    mock = MagicMock()
-    monkeypatch.setattr(files, "replace_in_file", mock)
-    project_name = "myproject"
-    files.change_urls(project_name)
-    return mock, project_name
+def test_change_urls_preserve_imports(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert "from django.contrib import admin" in actual
 
 
-def test_change_urls(change_urls_setup):
-    mock, project_name = change_urls_setup
-    replacement = (
-        f'app_name = "{project_name}"' + os.linesep + os.linesep + "urlpatterns = ["
-    )
-    mock.assert_called_once_with(
-        f"./src/{project_name}/urls.py", [(r"urlpatterns = \[", replacement)]
-    )
+def test_change_urls_import_include(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert "from django.urls import include, path" in actual
+
+
+def test_change_urls_import_template_view(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert "from django.views.generic.base import TemplateView" in actual
+
+
+def test_change_urls_skip_template_view(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject", api_only=True)
+    actual = mock_file().write.call_args[0][0]
+    assert "from django.views.generic.base import TemplateView" not in actual
+
+
+def test_change_urls_add_site_name(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert 'app_name = "myproject"' in actual
+
+
+def test_change_urls_preserve_admin_path(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    regex = r"urlpatterns = \[(.*?)path\(\'admin\/\', admin\.site\.urls\),"
+    check = re.search(regex, actual, re.DOTALL)
+    assert check is not None
+
+
+def test_change_urls_skip_home(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject", api_only=True)
+    actual = mock_file().write.call_args[0][0]
+    home = 'path("", TemplateView.as_view(template_name="home.html"), name="home"),'
+    assert home not in actual
+
+
+def test_change_urls_add_home(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    home = 'path("", TemplateView.as_view(template_name="home.html"), name="home"),'
+    assert home in actual
+
+
+def test_change_urls_skip_users_urls(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject", api_only=True)
+    actual = mock_file().write.call_args[0][0]
+    assert 'path("", include("users.urls")),' not in actual
+
+
+def test_change_urls_add_users_urls(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert 'path("", include("users.urls")),' in actual
+
+
+def test_change_urls_skip_django_auth_urls(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject", api_only=True)
+    actual = mock_file().write.call_args[0][0]
+    assert 'path("", include("django.contrib.auth.urls")),' not in actual
+
+
+def test_change_urls_add_django_auth_urls(mock_file):
+    mock_file().read.return_value = urls_py_content
+    files.change_urls("myproject")
+    actual = mock_file().write.call_args[0][0]
+    assert 'path("", include("django.contrib.auth.urls")),' in actual
 
 
 def test_change_settings_open_file(mock_file):

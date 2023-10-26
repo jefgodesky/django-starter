@@ -168,15 +168,45 @@ def change_scripts(project: str):
     replace_in_file("down.sh", replacements)
 
 
-def change_urls(project: str):
-    anchor = "urlpatterns = ["
-    app_name = f'app_name = "{project}"'
-    replacement = app_name + os.linesep + os.linesep + anchor
-    replacements = [
-        (r"urlpatterns = \[", replacement),
-    ]
+def change_urls(project: str, api_only: bool = False):
+    filename = f"./src/{project}/urls.py"
 
-    replace_in_file(f"./src/{project}/urls.py", replacements)
+    with open(filename) as file:
+        contents = file.read()
+
+    imports = []
+    found_imports = re.findall(r"from (.*?) import (.*?)\n", contents)
+    for import_statement in found_imports:
+        source = import_statement[0]
+        item = import_statement[1]
+        if source == "django.urls":
+            item = "include, " + item
+        imports.append(f"from {source} import {item}")
+
+    if not api_only:
+        imports.append("from django.views.generic.base import TemplateView")
+
+    regex = r"urlpatterns = \[(.*?)]"
+    search = re.search(regex, contents, flags=re.DOTALL | re.MULTILINE)
+    urlpatterns_str = "" if search is None else search.group(1).strip()
+    found_urlpatterns = urlpatterns_str.split(os.linesep)
+    urlpatterns = found_urlpatterns
+
+    if not api_only:
+        home = 'TemplateView.as_view(template_name="home.html")'
+        imports.append(f'path("", {home}, name="home"),')
+        imports.append('path("", include("users.urls")),')
+        imports.append('path("", include("django.contrib.auth.urls")),')
+
+    section_break = os.linesep * 2
+    import_section = os.linesep.join(imports)
+    app_name_section = f'app_name = "{project}"'
+    urlpatterns_section_inner = os.linesep.join(urlpatterns)
+    urlpatterns_section = f"urlpatterns = [\n{urlpatterns_section_inner}\n]"
+    sections = [import_section, app_name_section, urlpatterns_section]
+
+    with open(filename, "w") as file:
+        file.write(section_break.join(sections))
 
 
 def change_settings(filename: str, users: str, api_only: bool = False):
