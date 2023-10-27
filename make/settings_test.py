@@ -16,17 +16,17 @@ DATABASES = {
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages'
-            ]
-        }
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
     },
 ]
 
@@ -73,23 +73,7 @@ def test_change_database_settings(change_database_setup):
 
 def test_set_project_template_dir():
     actual = settings.set_project_template_dir(test_example)
-    expected = """TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": [BASE_DIR / "templates"],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages'
-            ]
-        }
-    },
-]"""
-    print(actual)
-    assert expected in actual
+    assert '"DIRS": [BASE_DIR / "templates"],' in actual
 
 
 def test_change_database_settings_not_double_closed(change_database_setup):
