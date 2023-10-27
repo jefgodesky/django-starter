@@ -69,7 +69,7 @@ def test_prompt_password_password_returned(prompt_password_setup):
 
 @pytest.fixture
 def get_project_setup(monkeypatch, capsys):
-    test_input = "Test"
+    test_input = "test"
     monkeypatch.setattr("builtins.input", lambda _: test_input)
     result = prompts.get_project("")
     captured = capsys.readouterr().out
@@ -91,6 +91,20 @@ def test_get_project_gets_default(monkeypatch):
     monkeypatch.setattr(prompts, "prompt", mock_empty_prompt)
     result = prompts.get_project(default_value)
     assert result == default_value
+
+
+def test_get_project_rejects_capitals(monkeypatch):
+    input_generator = iter(["Test", "test"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.get_project("myproject")
+    assert result == "test"
+
+
+def test_get_project_rejects_dashes(monkeypatch):
+    input_generator = iter(["test-example", "test_example"])
+    monkeypatch.setattr("builtins.input", lambda _: next(input_generator))
+    result = prompts.get_project("myproject")
+    assert result == "test_example"
 
 
 @pytest.fixture

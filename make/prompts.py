@@ -23,7 +23,14 @@ def prompt_password(msg: str, prompt_text: str):
 def get_project(default_value: str):
     msg = "What would you like to call your project?"
     prompt_text = f"Project name ({default_value}): "
-    return prompt(msg, prompt_text) or default_value
+    valid = False
+    while not valid:
+        input_value = prompt(msg, prompt_text) or default_value
+        all_lower = input_value == input_value.lower()
+        no_dashes = "-" not in input_value
+        valid = all_lower and no_dashes
+        if valid:
+            return input_value
 
 
 def get_repo(default_value: str):
