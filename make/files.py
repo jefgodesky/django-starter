@@ -208,7 +208,7 @@ def change_urls(project: str, api_only: bool = False):
     sections = [import_section, app_name_section, urlpatterns_section]
 
     with open(filename, "w") as file:
-        file.write(section_break.join(sections))
+        file.write(section_break.join(sections) + os.linesep)
 
 
 def change_settings(filename: str, users: str, api_only: bool = False):
