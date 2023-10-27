@@ -71,15 +71,20 @@ def test_change_database_settings(change_database_setup):
     assert expected in actual
 
 
-def test_set_project_template_dir():
-    actual = settings.set_project_template_dir(test_example)
-    assert '"DIRS": [BASE_DIR / "templates"],' in actual
+def test_change_database_settings_does_not_eat_next_section(change_database_setup):
+    actual, _ = change_database_setup
+    assert "TEMPLATES = [" in actual
 
 
 def test_change_database_settings_not_double_closed(change_database_setup):
     actual, expected = change_database_setup
     expected = expected + "\n}"
     assert expected not in actual
+
+
+def test_set_project_template_dir():
+    actual = settings.set_project_template_dir(test_example)
+    assert '"DIRS": [BASE_DIR / "templates"],' in actual
 
 
 def test_add_new_settings_users():
