@@ -217,6 +217,7 @@ def change_settings(filename: str, users: str, api_only: bool = False):
 
     contents = settings.add_installed_apps(contents, users)
     contents = settings.change_database_settings(contents)
+    contents = settings.set_project_template_dir(contents)
     contents = settings.add_new_settings(contents, users, api_only=api_only)
     contents = settings.add_import_os(contents)
     contents = settings.set_secret_key(contents)
