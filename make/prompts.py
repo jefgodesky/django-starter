@@ -77,3 +77,7 @@ def get_api_only():
     affirmations = ["y", "yes"]
     value = prompt(cleandoc(msg), prompt_text)
     return True if value.lower() in affirmations else False
+
+
+def underscores_for_dashes(dashed: str):
+    return dashed.replace("-", "_")

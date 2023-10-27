@@ -282,3 +282,8 @@ def test_get_api_only_takes_yes(monkeypatch):
     monkeypatch.setattr("builtins.input", lambda _: "YeS")
     result = prompts.get_api_only()
     assert result is True
+
+
+def test_underscores_for_dashes():
+    actual = prompts.underscores_for_dashes("dashed-example-string")
+    assert actual == "dashed_example_string"
