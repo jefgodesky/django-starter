@@ -9,7 +9,8 @@ from git import Repo
 def main():
     repository = Repo.init(".")
     url = repository.remotes.origin.url
-    default_username, default_project_name, default_repository = repo.get_repo(url)
+    default_username, github_project_name, default_repository = repo.get_repo(url)
+    default_project_name = prompts.underscores_for_dashes(github_project_name)
 
     messages.print_intro()
     project = prompts.get_project(default_project_name)
