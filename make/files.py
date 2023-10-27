@@ -175,7 +175,7 @@ def change_urls(project: str, api_only: bool = False):
         contents = file.read()
 
     imports = []
-    found_imports = re.findall(r"from (.*?) import (.*?)\n", contents)
+    found_imports = re.findall(r"^from (.*?) import (.*?)$", contents, re.MULTILINE)
     for import_statement in found_imports:
         source = import_statement[0]
         item = import_statement[1]
@@ -194,9 +194,11 @@ def change_urls(project: str, api_only: bool = False):
 
     if not api_only:
         home = 'TemplateView.as_view(template_name="home.html")'
-        imports.append(f'path("", {home}, name="home"),')
-        imports.append('path("", include("users.urls")),')
-        imports.append('path("", include("django.contrib.auth.urls")),')
+        urlpatterns.append(f'path("", {home}, name="home"),')
+        urlpatterns.append('path("", include("users.urls")),')
+        urlpatterns.append('path("", include("django.contrib.auth.urls")),')
+
+    urlpatterns = [f"    {pattern}" for pattern in urlpatterns]
 
     section_break = os.linesep * 2
     import_section = os.linesep.join(imports)
