@@ -35,25 +35,25 @@ INSTALLED_APPS = [
 ]"""
 
 
-def test_add_installed_apps_keeps_previous():
-    actual = settings.add_installed_apps(test_example, "users")
-    assert '"previously_installed",' in actual
+class TestAddInstalledApps:
+    def test_keeps_previous(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"previously_installed",' in actual
+
+    def test_adds_rest_framework(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"rest_framework",' in actual
+
+    def test_adds_users(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"users",' in actual
 
 
-def test_add_installed_apps_adds_rest_framework():
-    actual = settings.add_installed_apps(test_example, "users")
-    assert '"rest_framework",' in actual
-
-
-def test_add_installed_apps_adds_users():
-    actual = settings.add_installed_apps(test_example, "users")
-    assert '"users",' in actual
-
-
-@pytest.fixture
-def change_database_setup():
-    actual = settings.change_database_settings(test_example)
-    expected = """DATABASES = {
+class TestChangeDatabaseSettings:
+    @pytest.fixture
+    def setup(self):
+        actual = settings.change_database_settings(test_example)
+        expected = """DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
         "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
@@ -63,23 +63,20 @@ def change_database_setup():
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }"""
-    return actual, expected
+        return actual, expected
 
+    def test_content(self, setup):
+        actual, expected = setup
+        assert expected in actual
 
-def test_change_database_settings(change_database_setup):
-    actual, expected = change_database_setup
-    assert expected in actual
+    def test_does_not_eat_next_section(self, setup):
+        actual, _ = setup
+        assert "TEMPLATES = [" in actual
 
-
-def test_change_database_settings_does_not_eat_next_section(change_database_setup):
-    actual, _ = change_database_setup
-    assert "TEMPLATES = [" in actual
-
-
-def test_change_database_settings_not_double_closed(change_database_setup):
-    actual, expected = change_database_setup
-    expected = expected + "\n}"
-    assert expected not in actual
+    def test_not_double_closed(self, setup):
+        actual, expected = setup
+        expected = expected + "\n}"
+        assert expected not in actual
 
 
 def test_set_project_template_dir():
@@ -87,34 +84,30 @@ def test_set_project_template_dir():
     assert '"DIRS": [BASE_DIR / "templates"],' in actual
 
 
-def test_add_new_settings_users():
-    actual = settings.add_new_settings(test_example, "users")
-    assert 'AUTH_USER_MODEL = "users.UserAccount"' in actual
+class TestAddNewSettings:
+    def test_user_model(self):
+        actual = settings.add_new_settings(test_example, "users")
+        assert 'AUTH_USER_MODEL = "users.UserAccount"' in actual
 
+    def testsiteid(self):
+        actual = settings.add_new_settings(test_example, "users")
+        assert "SITE_ID = 1" in actual
 
-def test_add_new_settings_siteid():
-    actual = settings.add_new_settings(test_example, "users")
-    assert "SITE_ID = 1" in actual
+    def test_login_redirect(self):
+        actual = settings.add_new_settings(test_example, "users")
+        assert 'LOGIN_REDIRECT_URL = "home"' in actual
 
+    def test_logout_redirect(self):
+        actual = settings.add_new_settings(test_example, "users")
+        assert 'LOGOUT_REDIRECT_URL = "home"' in actual
 
-def test_add_new_settings_login_redirect():
-    actual = settings.add_new_settings(test_example, "users")
-    assert 'LOGIN_REDIRECT_URL = "home"' in actual
+    def test_no_login_redirect(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert "LOGIN_REDIRECT_URL" not in actual
 
-
-def test_add_new_settings_logout_redirect():
-    actual = settings.add_new_settings(test_example, "users")
-    assert 'LOGOUT_REDIRECT_URL = "home"' in actual
-
-
-def test_add_new_settings_no_login_redirect():
-    actual = settings.add_new_settings(test_example, "users", api_only=True)
-    assert "LOGIN_REDIRECT_URL" not in actual
-
-
-def test_add_new_settings_no_logout_redirect():
-    actual = settings.add_new_settings(test_example, "users", api_only=True)
-    assert "LOGOUT_REDIRECT_URL" not in actual
+    def test_no_logout_redirect(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert "LOGOUT_REDIRECT_URL" not in actual
 
 
 def test_add_import_os():
