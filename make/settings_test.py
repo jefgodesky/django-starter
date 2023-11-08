@@ -49,9 +49,33 @@ class TestAddInstalledApps:
         actual = settings.add_installed_apps(test_example, "users")
         assert '"previously_installed",' in actual
 
+    def test_adds_sites(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"django.contrib.sites",' in actual
+
     def test_adds_rest_framework(self):
         actual = settings.add_installed_apps(test_example, "users")
         assert '"rest_framework",' in actual
+
+    def test_adds_rest_framework_authtoken(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"rest_framework.authtoken",' in actual
+
+    def test_adds_allauth(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"allauth",' in actual
+
+    def test_adds_allauth_account(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"allauth.account",' in actual
+
+    def test_adds_dj_rest_auth(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"dj_rest_auth",' in actual
+
+    def test_adds_dj_rest_auth_registration(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"dj_rest_auth.registration",' in actual
 
     def test_adds_users(self):
         actual = settings.add_installed_apps(test_example, "users")

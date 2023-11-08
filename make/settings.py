@@ -3,7 +3,16 @@ import re
 
 
 def add_installed_apps(settings: str, users: str):
-    apps_to_add = ['"rest_framework"', f'"{users}"']
+    apps_to_add = [
+        '"django.contrib.sites"',
+        '"rest_framework"',
+        '"rest_framework.authtoken"',
+        '"allauth"',
+        '"allauth.account"',
+        '"dj_rest_auth"',
+        '"dj_rest_auth.registration"',
+        f'"{users}"',
+    ]
     match = re.search(r"INSTALLED_APPS = \[(.*?)]", settings, flags=re.DOTALL)
     if not match:
         return settings
