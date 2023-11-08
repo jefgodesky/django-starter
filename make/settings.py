@@ -95,3 +95,8 @@ def add_prod_rest_framework_renderer(settings: str):
     ] = "rest_framework.renderers.JSONRenderer"
 """
     return settings + os.linesep + os.linesep + addendum
+
+
+def remove_password_validators(settings: str):
+    pattern = r"AUTH_PASSWORD_VALIDATORS = \[[\s\S]*?]"
+    return re.sub(pattern, "AUTH_PASSWORD_VALIDATORS = []", settings)

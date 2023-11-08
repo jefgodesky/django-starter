@@ -14,6 +14,15 @@ DATABASES = {
     }
 }
 
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    }
+]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -139,3 +148,10 @@ def test_add_prod_rest_framework():
     ] = "rest_framework.renderers.JSONRenderer"
 """
     assert expected in actual
+
+
+def test_remove_password_validators():
+    actual = settings.remove_password_validators(test_example)
+    print(actual)
+    assert "AUTH_PASSWORD_VALIDATORS = []" in actual
+    assert "TEMPLATES = [" in actual
