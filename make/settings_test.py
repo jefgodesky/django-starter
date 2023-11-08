@@ -134,7 +134,8 @@ def test_set_allowed_hosts():
 def test_add_prod_rest_framework():
     actual = settings.add_prod_rest_framework_renderer(test_example)
     expected = """if not DEBUG:
-    REST_FRAMEWORK = {
-        "DEFAULT_RENDERER_CLASSES": "rest_framework.renderers.JSONRenderer"
-    }"""
+    REST_FRAMEWORK[
+        "DEFAULT_RENDERER_CLASSES"
+    ] = "rest_framework.renderers.JSONRenderer"
+"""
     assert expected in actual
