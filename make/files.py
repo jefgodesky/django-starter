@@ -34,23 +34,6 @@ def exempt_long_lines(filename: str):
         file.writelines(modified_lines)
 
 
-def create_users_model_test(users: str):
-    dest = f"./src/{users}/models_test.py"
-    replace_in_file("make/users/models_test.py", [], dest=dest)
-
-
-def create_users_model(users: str):
-    replace_in_file("make/users/models.py", [], dest=f"./src/{users}/models.py")
-
-
-def create_users_forms(users: str):
-    replace_in_file("make/users/forms.py", [], dest=f"./src/{users}/forms.py")
-
-
-def create_users_admin(users: str):
-    replace_in_file("make/users/admin.py", [], dest=f"./src/{users}/admin.py")
-
-
 def create_base_template(project: str):
     replacements = [(r"PROJECT", project)]
     src = "make/templates/base.html"
@@ -63,18 +46,6 @@ def create_home_template(project: str):
     src = "make/templates/home.html"
     dest = f"./src/{project}/templates/home.html"
     replace_in_file(src, replacements, dest=dest)
-
-
-def create_login_template(users: str):
-    src = "make/users/templates/login.html"
-    dest = f"./src/{users}/templates/login.html"
-    replace_in_file(src, [], dest=dest)
-
-
-def create_register_template(users: str):
-    src = "make/users/templates/register.html"
-    dest = f"./src/{users}/templates/register.html"
-    replace_in_file(src, [], dest=dest)
 
 
 def change_cd_workflow(project: str, droplet_user: str):
@@ -227,3 +198,28 @@ def change_settings(filename: str, users: str, api_only: bool = False):
 
     with open(filename, "w") as file:
         file.write(contents)
+
+
+def copy_files(project: str, users: str):
+    files = {
+        "make/.conftest.py": "./src/conftest.py",
+        "make/test.sh": "./src/test.sh",
+        "make/templates/400.html": f"./src/{project}/templates/400.html",
+        "make/templates/403.html": f"./src/{project}/templates/403.html",
+        "make/templates/404.html": f"./src/{project}/templates/404.html",
+        "make/templates/500.html": f"./src/{project}/templates/500.html",
+        "make/users/admin.py": f"./src/{users}/admin.py",
+        "make/users/forms.py": f"./src/{users}/forms.py",
+        "make/users/models.py": f"./src/{users}/models.py",
+        "make/users/models.test.py": f"./src/{users}/models_test.py",
+        "make/users/serializers.py": f"./src/{users}/serializers.py",
+        "make/users/serializers.test.py": f"./src/{users}/serializers_test.py",
+        "make/users/urls.py": f"./src/{users}/urls.py",
+        "make/users/views.py": f"./src/{users}/views.py",
+        "make/users/views.test.py": f"./src/{users}/views_test.py",
+        "make/users/templates/login.html": f"./src/{users}/templates/login.html",
+        "make/users/templates/register.html": f"./src/{users}/templates/register.html",
+    }
+
+    for file in files:
+        replace_in_file(file, [], dest=files[file])

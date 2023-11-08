@@ -78,64 +78,6 @@ class TestExemptLongLines:
         assert actual == ["A" * 89 + "  # noqa: E501\n"]
 
 
-class TestCreateUsersModelTest:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = "def create_test_user():"
-        files.create_users_model_test("users")
-        actual = mock_file().write.call_args[0][0]
-        assert "def create_test_user():" in actual
-
-    def test_filename(self, mock_file):
-        files.create_users_model_test("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/models_test.py"
-        assert args[1] == "w"
-
-
-class TestCreateUsersModel:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = "class UserAccount(AbstractUser):"
-        files.create_users_model("users")
-        actual = mock_file().write.call_args[0][0]
-        assert "class UserAccount(AbstractUser):" in actual
-
-    def test_filename(self, mock_file):
-        files.create_users_model("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/models.py"
-        assert args[1] == "w"
-
-
-class TestCreateUsersForms:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = (
-            "class UserAccountCreationForm(UserCreationForm):"
-        )
-        files.create_users_forms("users")
-        actual = mock_file().write.call_args[0][0]
-        assert "class UserAccountCreationForm(UserCreationForm):" in actual
-
-    def test_filename(self, mock_file):
-        files.create_users_forms("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/forms.py"
-        assert args[1] == "w"
-
-
-class TestCreateUsersAdmin:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = "class UserAccountAdmin(UserAdmin):"
-        files.create_users_admin("users")
-        actual = mock_file().write.call_args[0][0]
-        assert "class UserAccountAdmin(UserAdmin):" in actual
-
-    def test_filename(self, mock_file):
-        files.create_users_admin("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/admin.py"
-        assert args[1] == "w"
-
-
 class TestCreateBaseTemplate:
     def test_content(self, mock_file):
         title = "<title>{% block title %}PROJECT{% endblock %}</title>"
@@ -164,36 +106,6 @@ class TestCreateHomeTemplate:
         files.create_home_template("myproject")
         args = mock_file.call_args[0]
         assert args[0] == "./src/myproject/templates/home.html"
-        assert args[1] == "w"
-
-
-class TestLoginTemplate:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = "<h1>Log In</h1>"
-        files.create_login_template("users")
-        actual = mock_file().write.call_args[0][0]
-        expected = "<h1>Log In</h1>"
-        assert expected in actual
-
-    def test_filename(self, mock_file):
-        files.create_login_template("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/templates/login.html"
-        assert args[1] == "w"
-
-
-class TestCreateRegisterTemplate:
-    def test_content(self, mock_file):
-        mock_file().read.return_value = "<h1>Create an Account</h1>"
-        files.create_register_template("users")
-        actual = mock_file().write.call_args[0][0]
-        expected = "<h1>Create an Account</h1>"
-        assert expected in actual
-
-    def test_filename(self, mock_file):
-        files.create_register_template("users")
-        args = mock_file.call_args[0]
-        assert args[0] == "./src/users/templates/register.html"
         assert args[1] == "w"
 
 
@@ -444,3 +356,112 @@ class TestChangeSettings:
         assert args[0] == "settings.py"
         assert args[1] == "w"
         assert len(args) == 2
+
+
+class TestCopyFiles:
+    @pytest.fixture
+    def calls(self, mock_file):
+        files.copy_files("myproject", "usersapp")
+        return [str(call_[0]) for call_ in mock_file.call_args_list]
+
+    def test_read_conftest(self, calls):
+        assert "('make/.conftest.py',)" in calls
+
+    def test_write_conftest(self, calls):
+        assert "('./src/conftest.py', 'w')" in calls
+
+    def test_read_testsh(self, calls):
+        assert "('make/test.sh',)" in calls
+
+    def test_write_testsh(self, calls):
+        assert "('./src/test.sh', 'w')" in calls
+
+    def test_read_400_template(self, calls):
+        assert "('make/templates/400.html',)" in calls
+
+    def test_write_400_template(self, calls):
+        assert "('./src/myproject/templates/400.html', 'w')" in calls
+
+    def test_read_403_template(self, calls):
+        assert "('make/templates/403.html',)" in calls
+
+    def test_write_403_template(self, calls):
+        assert "('./src/myproject/templates/403.html', 'w')" in calls
+
+    def test_read_404_template(self, calls):
+        assert "('make/templates/404.html',)" in calls
+
+    def test_write_404_template(self, calls):
+        assert "('./src/myproject/templates/404.html', 'w')" in calls
+
+    def test_read_500_template(self, calls):
+        assert "('make/templates/500.html',)" in calls
+
+    def test_write_500_template(self, calls):
+        assert "('./src/myproject/templates/500.html', 'w')" in calls
+
+    def test_read_users_admin(self, calls):
+        assert "('make/users/admin.py',)" in calls
+
+    def test_write_users_admin(self, calls):
+        assert "('./src/usersapp/admin.py', 'w')" in calls
+
+    def test_read_users_forms(self, calls):
+        assert "('make/users/forms.py',)" in calls
+
+    def test_write_users_forms(self, calls):
+        assert "('./src/usersapp/forms.py', 'w')" in calls
+
+    def test_read_users_models(self, calls):
+        assert "('make/users/models.py',)" in calls
+
+    def test_write_users_models(self, calls):
+        assert "('./src/usersapp/models.py', 'w')" in calls
+
+    def test_read_users_models_tests(self, calls):
+        assert "('make/users/models.test.py',)" in calls
+
+    def test_write_users_models_tests(self, calls):
+        assert "('./src/usersapp/models_test.py', 'w')" in calls
+
+    def test_read_users_serializers(self, calls):
+        assert "('make/users/serializers.py',)" in calls
+
+    def test_write_users_serializers(self, calls):
+        assert "('./src/usersapp/serializers.py', 'w')" in calls
+
+    def test_read_users_serializers_tests(self, calls):
+        assert "('make/users/serializers.test.py',)" in calls
+
+    def test_write_users_serializers_tests(self, calls):
+        assert "('./src/usersapp/serializers_test.py', 'w')" in calls
+
+    def test_read_users_urls(self, calls):
+        assert "('make/users/urls.py',)" in calls
+
+    def test_write_users_urls(self, calls):
+        assert "('./src/usersapp/urls.py', 'w')" in calls
+
+    def test_read_users_views(self, calls):
+        assert "('make/users/views.py',)" in calls
+
+    def test_write_users_views(self, calls):
+        assert "('./src/usersapp/views.py', 'w')" in calls
+
+    def test_read_users_views_tests(self, calls):
+        assert "('make/users/views.test.py',)" in calls
+
+    def test_write_users_views_tests(self, calls):
+        assert "('./src/usersapp/views_test.py', 'w')" in calls
+
+    def test_read_login_template(self, calls):
+        assert "('make/users/templates/login.html',)" in calls
+
+    def test_write_login_template(self, calls):
+        assert "('./src/usersapp/templates/login.html', 'w')" in calls
+
+    def test_read_register_template(self, calls):
+        assert "('make/users/templates/register.html',)" in calls
+
+    def test_write_register_template(self, calls):
+        assert "('./src/usersapp/templates/register.html', 'w')" in calls
