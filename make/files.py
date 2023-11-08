@@ -200,7 +200,7 @@ def change_settings(filename: str, users: str, api_only: bool = False):
         file.write(contents)
 
 
-def copy_files(project: str, users: str):
+def copy_files(project: str, users: str, api_only: bool = False):
     files = {
         "make/.conftest.py": "./src/conftest.py",
         "make/test.sh": "./src/test.sh",
@@ -214,12 +214,14 @@ def copy_files(project: str, users: str):
         "make/users/models.test.py": f"./src/{users}/models_test.py",
         "make/users/serializers.py": f"./src/{users}/serializers.py",
         "make/users/serializers.test.py": f"./src/{users}/serializers_test.py",
-        "make/users/urls.py": f"./src/{users}/urls.py",
         "make/users/views.py": f"./src/{users}/views.py",
         "make/users/views.test.py": f"./src/{users}/views_test.py",
         "make/users/templates/login.html": f"./src/{users}/templates/login.html",
         "make/users/templates/register.html": f"./src/{users}/templates/register.html",
     }
+
+    urls = "make/users/urls.api-only.py" if api_only else "make/users/urls.py"
+    files[urls] = f"./src/{users}/urls.py"
 
     for file in files:
         replace_in_file(file, [], dest=files[file])

@@ -364,6 +364,11 @@ class TestCopyFiles:
         files.copy_files("myproject", "usersapp")
         return [str(call_[0]) for call_ in mock_file.call_args_list]
 
+    @pytest.fixture
+    def api_only_calls(self, mock_file):
+        files.copy_files("myproject", "usersapp", api_only=True)
+        return [str(call_[0]) for call_ in mock_file.call_args_list]
+
     def test_read_conftest(self, calls):
         assert "('make/.conftest.py',)" in calls
 
@@ -465,3 +470,12 @@ class TestCopyFiles:
 
     def test_write_register_template(self, calls):
         assert "('./src/usersapp/templates/register.html', 'w')" in calls
+
+    def test_no_read_users_api_only_urls(self, api_only_calls):
+        assert "('make/users/urls.py',)" not in api_only_calls
+
+    def test_read_users_api_only_urls(self, api_only_calls):
+        assert "('make/users/urls.api-only.py',)" in api_only_calls
+
+    def test_write_users_api_only_urls(self, api_only_calls):
+        assert "('./src/usersapp/urls.py', 'w')" in api_only_calls
