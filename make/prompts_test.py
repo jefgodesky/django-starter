@@ -273,6 +273,39 @@ class TestGetAPIOnly:
         assert result is True
 
 
+class TestGetSocialAuth:
+    def test_shows_message(self, monkeypatch, capsys):
+        monkeypatch.setattr("builtins.input", lambda _: "")
+        prompts.get_social_auth()
+        captured = capsys.readouterr().out
+        assert "OAuth authentication" in captured
+
+    def test_defaults_true(self, monkeypatch):
+        monkeypatch.setattr("builtins.input", lambda _: "x")
+        result = prompts.get_social_auth()
+        assert result is True
+
+    def test_takes_n(self, monkeypatch):
+        monkeypatch.setattr("builtins.input", lambda _: "n")
+        result = prompts.get_social_auth()
+        assert result is False
+
+    def test_takes_no(self, monkeypatch):
+        monkeypatch.setattr("builtins.input", lambda _: "No")
+        result = prompts.get_social_auth()
+        assert result is False
+
+    def test_takes_y(self, monkeypatch):
+        monkeypatch.setattr("builtins.input", lambda _: "y")
+        result = prompts.get_social_auth()
+        assert result is True
+
+    def test_takes_yes(self, monkeypatch):
+        monkeypatch.setattr("builtins.input", lambda _: "YeS")
+        result = prompts.get_social_auth()
+        assert result is True
+
+
 def test_underscores_for_dashes():
     actual = prompts.underscores_for_dashes("dashed-example-string")
     assert actual == "dashed_example_string"

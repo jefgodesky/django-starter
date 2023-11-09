@@ -86,5 +86,14 @@ def get_api_only():
     return True if value.lower() in affirmations else False
 
 
+def get_social_auth():
+    msg = """Would you like to add OAuth authentication (e.g., logging in with
+    Google, Facebook, etc.)?"""
+    prompt_text = "Social authentication? [Y/n]: "
+    negations = ["n", "no"]
+    value = prompt(cleandoc(msg), prompt_text)
+    return False if value.lower() in negations else True
+
+
 def underscores_for_dashes(dashed: str):
     return dashed.replace("-", "_")
