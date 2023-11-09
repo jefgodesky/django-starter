@@ -1,6 +1,8 @@
 from getpass import getpass
 from inspect import cleandoc
 
+import inquirer
+
 
 def prompt(msg: str, prompt_text: str, required: bool = False, options: dict = None):
     print("\n" + msg)
@@ -97,3 +99,36 @@ def get_social_auth():
 
 def underscores_for_dashes(dashed: str):
     return dashed.replace("-", "_")
+
+
+def get_social_auth_providers():
+    providers = {
+        "Apple": "apple",
+        "Auth0": "auth0",
+        "Digital Ocean": "digitalocean",
+        "Discord": "discord",
+        "Facebook": "facebook",
+        "GitHub": "github",
+        "Google": "google",
+        "Instagram": "instagram",
+        "LinkedIn": "linkedin",
+        "OpenID": "openid",
+        "Patreon": "patreon",
+        "Pinterest": "pinterest",
+        "Reddit": "reddit",
+        "Slack": "slack",
+        "Snapchat": "snap",
+        "Steam": "steam",
+        "Twitch": "twitch",
+        "Twitter OAuth2": "twitter_oauth2",
+    }
+
+    questions = [
+        inquirer.Checkbox(
+            "providers",
+            message="Which social authentication providers would you like to use?",
+            choices=providers.keys(),
+        )
+    ]
+    answers = inquirer.prompt(questions)
+    return [providers[provider] for provider in answers["providers"]]

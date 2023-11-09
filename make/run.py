@@ -7,6 +7,7 @@ from git import Repo
 
 
 def main():
+    providers = []
     repository = Repo.init(".")
     url = repository.remotes.origin.url
     default_username, github_project_name, default_repository = repo.get_repo(url)
@@ -17,6 +18,13 @@ def main():
     repository = prompts.get_repo(default_repository)
     deployer = prompts.get_deployer()
     users = prompts.get_users_appname()
+    api_only = prompts.get_api_only()
+    if not api_only:
+        social_auth = prompts.get_social_auth()
+        if social_auth:
+            providers = prompts.get_social_auth_providers()
+
+    print(providers)
 
     environments = {
         "dev": {
