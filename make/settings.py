@@ -109,3 +109,23 @@ def add_prod_rest_framework_renderer(settings: str):
 def remove_password_validators(settings: str):
     pattern = r"AUTH_PASSWORD_VALIDATORS = \[[\s\S]*?]"
     return re.sub(pattern, "AUTH_PASSWORD_VALIDATORS = []", settings)
+
+
+def get_social_auth_providers(providers):
+    config = {}
+    for provider in providers:
+        prefix = provider.upper()
+        config[provider] = {
+            "APP": {
+                "client_id": f'os.environ.get("{prefix}_CLIENT_ID")',
+                "secret": f'os.environ.get("{prefix}_SECRET")',
+                "key": f'os.environ.get("{prefix}_KEY")',
+            },
+            "SCOPE": ["read", "write"],
+        }
+
+        if provider == "apple":
+            config[provider]["APP"]["settings"] = {
+                "certificate_key": f'os.environ.get("{prefix}_CERTIFICATE_KEY")'
+            }
+    return config

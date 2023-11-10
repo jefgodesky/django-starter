@@ -179,3 +179,14 @@ def test_remove_password_validators():
     print(actual)
     assert "AUTH_PASSWORD_VALIDATORS = []" in actual
     assert "TEMPLATES = [" in actual
+
+
+class TestSocialAccountProviders:
+    def test_apple(self):
+        providers = settings.get_social_auth_providers(["apple"])
+        app = providers["apple"]["APP"]
+        certkey = app["settings"]["certificate_key"]
+        assert app["client_id"] == 'os.environ.get("APPLE_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("APPLE_SECRET")'
+        assert app["key"] == 'os.environ.get("APPLE_KEY")'
+        assert certkey == 'os.environ.get("APPLE_CERTIFICATE_KEY")'
