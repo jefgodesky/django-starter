@@ -209,3 +209,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("DIGITALOCEAN_SECRET")'
         assert app["key"] == 'os.environ.get("DIGITALOCEAN_KEY")'
         assert providers["digitalocean"]["SCOPE"] == ["read write"]
+
+    def test_discord(self):
+        providers = settings.get_social_auth_providers(["discord"])
+        app = providers["discord"]["APP"]
+        assert app["client_id"] == 'os.environ.get("DISCORD_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("DISCORD_SECRET")'
+        assert app["key"] == 'os.environ.get("DISCORD_KEY")'
+        assert providers["discord"]["SCOPE"] == ["read", "write"]
