@@ -155,4 +155,9 @@ def get_social_auth_providers(providers):
         if provider == "github":
             config[provider]["SCOPE"] = ["user"]
 
+        if provider == "google":
+            config[provider]["AUTH_PARAMS"] = {"access_type": "online"}
+            config[provider]["OAUTH_PKCE_ENABLED"] = True
+            config[provider]["SCOPE"] = ["profile", "email"]
+
     return config

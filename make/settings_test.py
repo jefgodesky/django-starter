@@ -244,3 +244,13 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("GITHUB_SECRET")'
         assert app["key"] == 'os.environ.get("GITHUB_KEY")'
         assert providers["github"]["SCOPE"] == ["user"]
+
+    def test_google(self):
+        providers = settings.get_social_auth_providers(["google"])
+        app = providers["google"]["APP"]
+        assert providers["google"]["AUTH_PARAMS"]["access_type"] == "online"
+        assert providers["google"]["OAUTH_PKCE_ENABLED"] is True
+        assert app["client_id"] == 'os.environ.get("GOOGLE_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("GOOGLE_SECRET")'
+        assert app["key"] == 'os.environ.get("GOOGLE_KEY")'
+        assert providers["google"]["SCOPE"] == ["profile", "email"]
