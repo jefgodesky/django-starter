@@ -83,7 +83,7 @@ def change_pytest_ini(project: str):
         ("PROJECT", project),
     ]
 
-    replace_in_file("src/pytest.ini", replacements)
+    replace_in_file("src/.pytest.ini", replacements, dest="src/pytest.ini")
 
 
 def make_env(

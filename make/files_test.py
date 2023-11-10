@@ -170,8 +170,7 @@ def test_change_pytest_ini_args(monkeypatch):
     project_name = "myproject"
     files.change_pytest_ini(project_name)
     replace_in_file_mock.assert_called_once_with(
-        "src/pytest.ini",
-        [("PROJECT", project_name)],
+        "src/.pytest.ini", [("PROJECT", project_name)], dest="src/pytest.ini"
     )
 
 
