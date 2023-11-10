@@ -112,15 +112,12 @@ def get_social_auth_providers():
         "Google": "google",
         "Instagram": "instagram",
         "LinkedIn": "linkedin",
-        "OpenID": "openid",
         "Patreon": "patreon",
         "Pinterest": "pinterest",
         "Reddit": "reddit",
         "Slack": "slack",
         "Snapchat": "snap",
-        "Steam": "steam",
         "Twitch": "twitch",
-        "Twitter OAuth2": "twitter_oauth2",
     }
 
     questions = [
