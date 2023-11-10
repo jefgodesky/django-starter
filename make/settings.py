@@ -172,4 +172,9 @@ def get_social_auth_providers(providers):
             config[provider]["PROFILE_FIELDS"] = fields
             config[provider]["SCOPE"] = ["r_basicprofile", "r_emailaddress"]
 
+        if provider == "patreon":
+            scope = ["identity", "identity[email]", "campaigns", "campaigns.members"]
+            config[provider]["VERSION"] = "v2"
+            config[provider]["SCOPE"] = scope
+
     return config

@@ -276,3 +276,17 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("LINKEDIN_SECRET")'
         assert app["key"] == 'os.environ.get("LINKEDIN_KEY")'
         assert providers["linkedin"]["SCOPE"] == ["r_basicprofile", "r_emailaddress"]
+
+    def test_patreon(self):
+        providers = settings.get_social_auth_providers(["patreon"])
+        app = providers["patreon"]["APP"]
+        assert providers["patreon"]["VERSION"] == "v2"
+        assert app["client_id"] == 'os.environ.get("PATREON_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("PATREON_SECRET")'
+        assert app["key"] == 'os.environ.get("PATREON_KEY")'
+        assert providers["patreon"]["SCOPE"] == [
+            "identity",
+            "identity[email]",
+            "campaigns",
+            "campaigns.members",
+        ]
