@@ -177,4 +177,12 @@ def get_social_auth_providers(providers):
             config[provider]["VERSION"] = "v2"
             config[provider]["SCOPE"] = scope
 
+        if provider == "reddit":
+            useragent = (
+                '"django:myappid:1.0 (by /u/" + os.environ.get("REDDIT_USERNAME") + ")"'
+            )
+            config[provider]["AUTH_PARAMS"] = {"duration": "permanent"}
+            config[provider]["USER_AGENT"] = useragent
+            config[provider]["SCOPE"] = ["identity"]
+
     return config

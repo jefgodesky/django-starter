@@ -290,3 +290,16 @@ class TestSocialAccountProviders:
             "campaigns",
             "campaigns.members",
         ]
+
+    def test_reddit(self):
+        providers = settings.get_social_auth_providers(["reddit"])
+        app = providers["reddit"]["APP"]
+        useragent = (
+            '"django:myappid:1.0 (by /u/" + os.environ.get("REDDIT_USERNAME") + ")"'
+        )
+        assert providers["reddit"]["AUTH_PARAMS"]["duration"] == "permanent"
+        assert providers["reddit"]["USER_AGENT"] == useragent
+        assert app["client_id"] == 'os.environ.get("REDDIT_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("REDDIT_SECRET")'
+        assert app["key"] == 'os.environ.get("REDDIT_KEY")'
+        assert providers["reddit"]["SCOPE"] == ["identity"]
