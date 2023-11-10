@@ -160,4 +160,16 @@ def get_social_auth_providers(providers):
             config[provider]["OAUTH_PKCE_ENABLED"] = True
             config[provider]["SCOPE"] = ["profile", "email"]
 
+        if provider == "linkedin":
+            fields = [
+                "id",
+                "first-name",
+                "last-name",
+                "email-address",
+                "picture-url",
+                "public-profile-url",
+            ]
+            config[provider]["PROFILE_FIELDS"] = fields
+            config[provider]["SCOPE"] = ["r_basicprofile", "r_emailaddress"]
+
     return config

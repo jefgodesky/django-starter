@@ -262,3 +262,17 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("INSTAGRAM_SECRET")'
         assert app["key"] == 'os.environ.get("INSTAGRAM_KEY")'
         assert providers["instagram"]["SCOPE"] == ["read", "write"]
+
+    def test_linkedin(self):
+        providers = settings.get_social_auth_providers(["linkedin"])
+        app = providers["linkedin"]["APP"]
+        assert "id" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert "first-name" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert "last-name" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert "email-address" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert "picture-url" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert "public-profile-url" in providers["linkedin"]["PROFILE_FIELDS"]
+        assert app["client_id"] == 'os.environ.get("LINKEDIN_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("LINKEDIN_SECRET")'
+        assert app["key"] == 'os.environ.get("LINKEDIN_KEY")'
+        assert providers["linkedin"]["SCOPE"] == ["r_basicprofile", "r_emailaddress"]
