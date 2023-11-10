@@ -254,3 +254,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("GOOGLE_SECRET")'
         assert app["key"] == 'os.environ.get("GOOGLE_KEY")'
         assert providers["google"]["SCOPE"] == ["profile", "email"]
+
+    def test_instagram(self):
+        providers = settings.get_social_auth_providers(["instagram"])
+        app = providers["instagram"]["APP"]
+        assert app["client_id"] == 'os.environ.get("INSTAGRAM_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("INSTAGRAM_SECRET")'
+        assert app["key"] == 'os.environ.get("INSTAGRAM_KEY")'
+        assert providers["instagram"]["SCOPE"] == ["read", "write"]
