@@ -201,3 +201,11 @@ class TestSocialAccountProviders:
         assert providers["auth0"]["AUTH0_URL"] == 'os.environ.get("AUTH0_URL")'
         assert providers["auth0"]["OAUTH_PKCE_ENABLED"] is True
         assert providers["auth0"]["SCOPE"] == ["read", "write"]
+
+    def test_digitalocean(self):
+        providers = settings.get_social_auth_providers(["digitalocean"])
+        app = providers["digitalocean"]["APP"]
+        assert app["client_id"] == 'os.environ.get("DIGITALOCEAN_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("DIGITALOCEAN_SECRET")'
+        assert app["key"] == 'os.environ.get("DIGITALOCEAN_KEY")'
+        assert providers["digitalocean"]["SCOPE"] == ["read write"]

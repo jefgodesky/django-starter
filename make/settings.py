@@ -133,4 +133,7 @@ def get_social_auth_providers(providers):
             config[provider]["AUTH0_URL"] = f'os.environ.get("{prefix}_URL")'
             config[provider]["OAUTH_PKCE_ENABLED"] = True
 
+        if provider == "digitalocean":
+            config[provider]["SCOPE"] = ["read write"]
+
     return config
