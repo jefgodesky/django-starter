@@ -128,4 +128,9 @@ def get_social_auth_providers(providers):
             config[provider]["APP"]["settings"] = {
                 "certificate_key": f'os.environ.get("{prefix}_CERTIFICATE_KEY")'
             }
+
+        if provider == "auth0":
+            config[provider]["AUTH0_URL"] = f'os.environ.get("{prefix}_URL")'
+            config[provider]["OAUTH_PKCE_ENABLED"] = True
+
     return config

@@ -190,3 +190,14 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("APPLE_SECRET")'
         assert app["key"] == 'os.environ.get("APPLE_KEY")'
         assert certkey == 'os.environ.get("APPLE_CERTIFICATE_KEY")'
+        assert providers["apple"]["SCOPE"] == ["read", "write"]
+
+    def test_auth0(self):
+        providers = settings.get_social_auth_providers(["auth0"])
+        app = providers["auth0"]["APP"]
+        assert app["client_id"] == 'os.environ.get("AUTH0_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("AUTH0_SECRET")'
+        assert app["key"] == 'os.environ.get("AUTH0_KEY")'
+        assert providers["auth0"]["AUTH0_URL"] == 'os.environ.get("AUTH0_URL")'
+        assert providers["auth0"]["OAUTH_PKCE_ENABLED"] is True
+        assert providers["auth0"]["SCOPE"] == ["read", "write"]
