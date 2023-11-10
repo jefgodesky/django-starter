@@ -217,3 +217,22 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("DISCORD_SECRET")'
         assert app["key"] == 'os.environ.get("DISCORD_KEY")'
         assert providers["discord"]["SCOPE"] == ["read", "write"]
+
+    def test_facebook(self):
+        providers = settings.get_social_auth_providers(["facebook"])
+        fb = providers["facebook"]
+        app = fb["APP"]
+        assert fb["METHOD"] == "oauth2"
+        assert fb["INIT_PARAMS"]["cookie"] is True
+        assert "id" in fb["FIELDS"]
+        assert "first_name" in fb["FIELDS"]
+        assert "last_name" in fb["FIELDS"]
+        assert "middle_name" in fb["FIELDS"]
+        assert "name" in fb["FIELDS"]
+        assert "name_format" in fb["FIELDS"]
+        assert "picture" in fb["FIELDS"]
+        assert "short_name" in fb["FIELDS"]
+        assert app["client_id"] == 'os.environ.get("FACEBOOK_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("FACEBOOK_SECRET")'
+        assert app["key"] == 'os.environ.get("FACEBOOK_KEY")'
+        assert providers["facebook"]["SCOPE"] == ["email", "public_profile"]

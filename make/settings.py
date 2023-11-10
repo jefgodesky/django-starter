@@ -136,4 +136,20 @@ def get_social_auth_providers(providers):
         if provider == "digitalocean":
             config[provider]["SCOPE"] = ["read write"]
 
+        if provider == "facebook":
+            fields = [
+                "id",
+                "first_name",
+                "last_name",
+                "middle_name",
+                "name",
+                "name_format",
+                "picture",
+                "short_name",
+            ]
+            config[provider]["METHOD"] = "oauth2"
+            config[provider]["INIT_PARAMS"] = {"cookie": True}
+            config[provider]["FIELDS"] = fields
+            config[provider]["SCOPE"] = ["email", "public_profile"]
+
     return config
