@@ -236,3 +236,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("FACEBOOK_SECRET")'
         assert app["key"] == 'os.environ.get("FACEBOOK_KEY")'
         assert providers["facebook"]["SCOPE"] == ["email", "public_profile"]
+
+    def test_github(self):
+        providers = settings.get_social_auth_providers(["github"])
+        app = providers["github"]["APP"]
+        assert app["client_id"] == 'os.environ.get("GITHUB_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("GITHUB_SECRET")'
+        assert app["key"] == 'os.environ.get("GITHUB_KEY")'
+        assert providers["github"]["SCOPE"] == ["user"]

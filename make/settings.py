@@ -152,4 +152,7 @@ def get_social_auth_providers(providers):
             config[provider]["FIELDS"] = fields
             config[provider]["SCOPE"] = ["email", "public_profile"]
 
+        if provider == "github":
+            config[provider]["SCOPE"] = ["user"]
+
     return config
