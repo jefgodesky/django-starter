@@ -299,6 +299,17 @@ def test_add_prod_rest_framework():
     assert expected in actual
 
 
+def test_add_authentication_backends():
+    actual = settings.add_authentication_backends(test_example)
+    expected = """
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+"""
+    assert expected in actual
+
+
 def test_remove_password_validators():
     actual = settings.remove_password_validators(test_example)
     print(actual)

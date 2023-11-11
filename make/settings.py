@@ -140,6 +140,15 @@ def add_prod_rest_framework_renderer(settings: str):
     return settings + os.linesep + os.linesep + addendum
 
 
+def add_authentication_backends(settings: str):
+    addendum = """AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+"""
+    return settings + os.linesep + os.linesep + addendum
+
+
 def remove_password_validators(settings: str):
     pattern = r"AUTH_PASSWORD_VALIDATORS = \[[\s\S]*?]"
     return re.sub(pattern, "AUTH_PASSWORD_VALIDATORS = []", settings)
