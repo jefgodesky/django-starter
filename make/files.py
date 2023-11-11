@@ -225,3 +225,28 @@ def copy_files(project: str, users: str, api_only: bool = False):
 
     for file in files:
         replace_in_file(file, [], dest=files[file])
+
+
+def add_provider_env(providers, env="prod"):
+    filename = f"docker/.env.{env}"
+
+    with open(filename) as file:
+        contents = file.read()
+
+    for provider in providers:
+        prefix = "SNAPCHAT" if provider == "snap" else provider.upper()
+        contents += f"\n{prefix}_CLIENT_ID=your_{prefix}_secret_here{os.linesep}"
+        contents += f"\n{prefix}_SECRET=your_{prefix}_secret_here{os.linesep}"
+        contents += f"\n{prefix}_KEY=your_{prefix}_key_here{os.linesep}"
+
+        if provider == "apple":
+            contents += "APPLE_CERTIFICATE_KEY=your_cert_here" + os.linesep
+
+        if provider == "auth0":
+            contents += "AUTH0_URL=your_url_here" + os.linesep
+
+        if provider == "reddit":
+            contents += "REDDIT_USERNAME=your_reddit_username_here" + os.linesep
+
+    with open(filename, "w") as file:
+        file.write(contents)

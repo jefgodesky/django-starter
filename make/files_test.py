@@ -478,3 +478,84 @@ class TestCopyFiles:
 
     def test_write_users_api_only_urls(self, api_only_calls):
         assert "('./src/usersapp/urls.py', 'w')" in api_only_calls
+
+
+def test_add_provider_env(mock_file):
+    mock_file().read.return_value = ""
+    providers = [
+        "apple",
+        "auth0",
+        "digitalocean",
+        "discord",
+        "facebook",
+        "github",
+        "google",
+        "instagram",
+        "linkedin",
+        "patreon",
+        "reddit",
+        "slack",
+        "snap",
+        "twitch",
+    ]
+    files.add_provider_env(providers)
+    actual = mock_file().write.call_args[0][0]
+
+    assert "APPLE_CLIENT_ID=" in actual
+    assert "APPLE_SECRET=" in actual
+    assert "APPLE_KEY=" in actual
+    assert "APPLE_CERTIFICATE_KEY=" in actual
+
+    assert "AUTH0_CLIENT_ID=" in actual
+    assert "AUTH0_SECRET=" in actual
+    assert "AUTH0_KEY=" in actual
+    assert "AUTH0_URL=" in actual
+
+    assert "DIGITALOCEAN_CLIENT_ID=" in actual
+    assert "DIGITALOCEAN_SECRET=" in actual
+    assert "DIGITALOCEAN_KEY=" in actual
+
+    assert "DISCORD_CLIENT_ID=" in actual
+    assert "DISCORD_SECRET=" in actual
+    assert "DISCORD_KEY=" in actual
+
+    assert "FACEBOOK_CLIENT_ID=" in actual
+    assert "FACEBOOK_SECRET=" in actual
+    assert "FACEBOOK_KEY=" in actual
+
+    assert "GITHUB_CLIENT_ID=" in actual
+    assert "GITHUB_SECRET=" in actual
+    assert "GITHUB_KEY=" in actual
+
+    assert "GOOGLE_CLIENT_ID=" in actual
+    assert "GOOGLE_SECRET=" in actual
+    assert "GOOGLE_KEY=" in actual
+
+    assert "INSTAGRAM_CLIENT_ID=" in actual
+    assert "INSTAGRAM_SECRET=" in actual
+    assert "INSTAGRAM_KEY=" in actual
+
+    assert "LINKEDIN_CLIENT_ID=" in actual
+    assert "LINKEDIN_SECRET=" in actual
+    assert "LINKEDIN_KEY=" in actual
+
+    assert "PATREON_CLIENT_ID=" in actual
+    assert "PATREON_SECRET=" in actual
+    assert "PATREON_KEY=" in actual
+
+    assert "REDDIT_CLIENT_ID=" in actual
+    assert "REDDIT_SECRET=" in actual
+    assert "REDDIT_KEY=" in actual
+    assert "REDDIT_USERNAME=" in actual
+
+    assert "SLACK_CLIENT_ID=" in actual
+    assert "SLACK_SECRET=" in actual
+    assert "SLACK_KEY=" in actual
+
+    assert "SNAPCHAT_CLIENT_ID=" in actual
+    assert "SNAPCHAT_SECRET=" in actual
+    assert "SNAPCHAT_KEY=" in actual
+
+    assert "TWITCH_CLIENT_ID=" in actual
+    assert "TWITCH_SECRET=" in actual
+    assert "TWITCH_KEY=" in actual
