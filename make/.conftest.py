@@ -6,10 +6,8 @@ import json
 
 import pytest
 from allauth.account.models import EmailAddress
-from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.sites.models import Site
 from django.test import Client
 from rest_framework.test import APIClient
 from users.models import UserAccount
@@ -163,18 +161,3 @@ def get_client(request, anon_client, user_client, other_client, staff_client):
             return other_client
         case "staff":
             return staff_client
-
-
-@pytest.fixture
-@pytest.mark.django_db
-def setup_social_app():
-    site = Site.objects.get_current()
-    social_app = SocialApp.objects.create(
-        provider="google",
-        name="Google",
-        client_id="your_client_id",
-        secret="your_secret",
-        key="",
-    )
-    social_app.sites.add(site)
-    return social_app
