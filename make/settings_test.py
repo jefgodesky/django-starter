@@ -303,3 +303,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("REDDIT_SECRET")'
         assert app["key"] == 'os.environ.get("REDDIT_KEY")'
         assert providers["reddit"]["SCOPE"] == ["identity"]
+
+    def test_slack(self):
+        providers = settings.get_social_auth_providers(["slack"])
+        app = providers["slack"]["APP"]
+        assert app["client_id"] == 'os.environ.get("SLACK_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("SLACK_SECRET")'
+        assert app["key"] == 'os.environ.get("SLACK_KEY")'
+        assert providers["slack"]["SCOPE"] == ["read"]
