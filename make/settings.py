@@ -114,10 +114,7 @@ def remove_password_validators(settings: str):
 def get_social_auth_providers(providers):
     config = {}
     for provider in providers:
-        prefixes = {"snap": "SNAPCHAT"}
-        prefix = (
-            provider.upper() if provider not in prefixes.keys() else prefixes[provider]
-        )
+        prefix = "SNAPCHAT" if provider == "snap" else provider.upper()
         config[provider] = {
             "APP": {
                 "client_id": f'os.environ.get("{prefix}_CLIENT_ID")',

@@ -319,3 +319,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("SNAPCHAT_SECRET")'
         assert app["key"] == 'os.environ.get("SNAPCHAT_KEY")'
         assert providers["snap"]["SCOPE"] == ["read"]
+
+    def test_twitch(self):
+        providers = settings.get_social_auth_providers(["twitch"])
+        app = providers["twitch"]["APP"]
+        assert app["client_id"] == 'os.environ.get("TWITCH_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("TWITCH_SECRET")'
+        assert app["key"] == 'os.environ.get("TWITCH_KEY")'
+        assert providers["twitch"]["SCOPE"] == ["read"]
