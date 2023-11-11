@@ -262,9 +262,14 @@ def test_set_secret_key():
     assert 'SECRET_KEY = os.environ.get("SECRET_KEY")' in actual
 
 
-def test_set_debug():
-    actual = settings.set_debug(test_example)
-    assert 'DEBUG = int(os.environ.get("DEBUG", default=1))' in actual
+class TestSetDebug:
+    def test_set_debug(self):
+        actual = settings.set_debug(test_example)
+        assert 'DEBUG = int(os.environ.get("DEBUG", default=1))' in actual
+
+    def test_set_testing(self):
+        actual = settings.set_debug(test_example)
+        assert 'TESTING = os.environ.get("DJANGO_TESTING") == "1"' in actual
 
 
 def test_set_allowed_hosts():

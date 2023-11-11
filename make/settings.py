@@ -104,7 +104,11 @@ def set_secret_key(settings: str):
 
 def set_debug(settings: str):
     find = r"DEBUG = (.*)\n"
-    replacement = 'DEBUG = int(os.environ.get("DEBUG", default=1))'
+    lines = [
+        'DEBUG = int(os.environ.get("DEBUG", default=1))',
+        'TESTING = os.environ.get("DJANGO_TESTING") == "1"',
+    ]
+    replacement = os.linesep.join(lines)
     return re.sub(find, replacement, settings)
 
 
