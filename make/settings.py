@@ -121,7 +121,7 @@ def get_social_auth_providers(providers):
                 "secret": f'os.environ.get("{prefix}_SECRET")',
                 "key": f'os.environ.get("{prefix}_KEY")',
             },
-            "SCOPE": ["read", "write"],
+            "SCOPE": ["read"],
         }
 
         if provider == "apple":
@@ -134,7 +134,7 @@ def get_social_auth_providers(providers):
             config[provider]["OAUTH_PKCE_ENABLED"] = True
 
         if provider == "digitalocean":
-            config[provider]["SCOPE"] = ["read write"]
+            config[provider]["SCOPE"] = ["read"]
 
         if provider == "facebook":
             fields = [

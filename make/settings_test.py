@@ -190,7 +190,7 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("APPLE_SECRET")'
         assert app["key"] == 'os.environ.get("APPLE_KEY")'
         assert certkey == 'os.environ.get("APPLE_CERTIFICATE_KEY")'
-        assert providers["apple"]["SCOPE"] == ["read", "write"]
+        assert providers["apple"]["SCOPE"] == ["read"]
 
     def test_auth0(self):
         providers = settings.get_social_auth_providers(["auth0"])
@@ -200,7 +200,7 @@ class TestSocialAccountProviders:
         assert app["key"] == 'os.environ.get("AUTH0_KEY")'
         assert providers["auth0"]["AUTH0_URL"] == 'os.environ.get("AUTH0_URL")'
         assert providers["auth0"]["OAUTH_PKCE_ENABLED"] is True
-        assert providers["auth0"]["SCOPE"] == ["read", "write"]
+        assert providers["auth0"]["SCOPE"] == ["read"]
 
     def test_digitalocean(self):
         providers = settings.get_social_auth_providers(["digitalocean"])
@@ -208,7 +208,7 @@ class TestSocialAccountProviders:
         assert app["client_id"] == 'os.environ.get("DIGITALOCEAN_CLIENT_ID")'
         assert app["secret"] == 'os.environ.get("DIGITALOCEAN_SECRET")'
         assert app["key"] == 'os.environ.get("DIGITALOCEAN_KEY")'
-        assert providers["digitalocean"]["SCOPE"] == ["read write"]
+        assert providers["digitalocean"]["SCOPE"] == ["read"]
 
     def test_discord(self):
         providers = settings.get_social_auth_providers(["discord"])
@@ -216,7 +216,7 @@ class TestSocialAccountProviders:
         assert app["client_id"] == 'os.environ.get("DISCORD_CLIENT_ID")'
         assert app["secret"] == 'os.environ.get("DISCORD_SECRET")'
         assert app["key"] == 'os.environ.get("DISCORD_KEY")'
-        assert providers["discord"]["SCOPE"] == ["read", "write"]
+        assert providers["discord"]["SCOPE"] == ["read"]
 
     def test_facebook(self):
         providers = settings.get_social_auth_providers(["facebook"])
@@ -261,7 +261,7 @@ class TestSocialAccountProviders:
         assert app["client_id"] == 'os.environ.get("INSTAGRAM_CLIENT_ID")'
         assert app["secret"] == 'os.environ.get("INSTAGRAM_SECRET")'
         assert app["key"] == 'os.environ.get("INSTAGRAM_KEY")'
-        assert providers["instagram"]["SCOPE"] == ["read", "write"]
+        assert providers["instagram"]["SCOPE"] == ["read"]
 
     def test_linkedin(self):
         providers = settings.get_social_auth_providers(["linkedin"])
