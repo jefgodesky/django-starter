@@ -69,6 +69,86 @@ class TestAddInstalledApps:
         actual = settings.add_installed_apps(test_example, "users")
         assert '"allauth.account",' in actual
 
+    def test_add_allauth_socialaccount(self):
+        actual = settings.add_installed_apps(test_example, "users", providers=["apple"])
+        assert '"allauth.socialaccount",' in actual
+
+    def test_add_allauth_socialaccount_auth0(self):
+        actual = settings.add_installed_apps(test_example, "users", providers=["auth0"])
+        assert '"allauth.socialaccount.providers.auth0",' in actual
+
+    def test_add_allauth_socialaccount_digitalocean(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["digitalocean"]
+        )
+        assert '"allauth.socialaccount.providers.digitalocean",' in actual
+
+    def test_add_allauth_socialaccount_discord(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["discord"]
+        )
+        assert '"allauth.socialaccount.providers.discord",' in actual
+
+    def test_add_allauth_socialaccount_facebook(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["facebook"]
+        )
+        assert '"allauth.socialaccount.providers.facebook",' in actual
+
+    def test_add_allauth_socialaccount_github(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["github"]
+        )
+        assert '"allauth.socialaccount.providers.github",' in actual
+
+    def test_add_allauth_socialaccount_google(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["google"]
+        )
+        assert '"allauth.socialaccount.providers.google",' in actual
+
+    def test_add_allauth_socialaccount_instagram(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["instagram"]
+        )
+        assert '"allauth.socialaccount.providers.instagram",' in actual
+
+    def test_add_allauth_socialaccount_linkedin(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["linkedin"]
+        )
+        assert '"allauth.socialaccount.providers.linkedin",' in actual
+
+    def test_add_allauth_socialaccount_patreon(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["patreon"]
+        )
+        assert '"allauth.socialaccount.providers.patreon",' in actual
+
+    def test_add_allauth_socialaccount_reddit(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["reddit"]
+        )
+        assert '"allauth.socialaccount.providers.reddit",' in actual
+
+    def test_add_allauth_socialaccount_slack(self):
+        actual = settings.add_installed_apps(test_example, "users", providers=["slack"])
+        assert '"allauth.socialaccount.providers.slack",' in actual
+
+    def test_add_allauth_socialaccount_snap(self):
+        actual = settings.add_installed_apps(test_example, "users", providers=["snap"])
+        assert '"allauth.socialaccount.providers.snap",' in actual
+
+    def test_add_allauth_socialaccount_twitch(self):
+        actual = settings.add_installed_apps(
+            test_example, "users", providers=["twitch"]
+        )
+        assert '"allauth.socialaccount.providers.twitch",' in actual
+
+    def test_add_allauth_socialaccount_apple(self):
+        actual = settings.add_installed_apps(test_example, "users", providers=["apple"])
+        assert '"allauth.socialaccount.providers.apple",' in actual
+
     def test_adds_dj_rest_auth(self):
         actual = settings.add_installed_apps(test_example, "users")
         assert '"dj_rest_auth",' in actual

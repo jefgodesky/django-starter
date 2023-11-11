@@ -2,17 +2,24 @@ import os
 import re
 
 
-def add_installed_apps(settings: str, users: str):
+def add_installed_apps(settings: str, users: str, providers=None):
     apps_to_add = [
         '"django.contrib.sites"',
         '"rest_framework"',
         '"rest_framework.authtoken"',
         '"allauth"',
         '"allauth.account"',
-        '"dj_rest_auth"',
-        '"dj_rest_auth.registration"',
-        f'"{users}"',
     ]
+
+    if providers:
+        apps_to_add.append('"allauth.socialaccount"')
+        for provider in providers:
+            apps_to_add.append(f'"allauth.socialaccount.providers.{provider}"')
+
+    apps_to_add.append('"dj_rest_auth"')
+    apps_to_add.append('"dj_rest_auth.registration"')
+    apps_to_add.append(f'"{users}"')
+
     match = re.search(r"INSTALLED_APPS = \[(.*?)]", settings, flags=re.DOTALL)
     if not match:
         return settings
