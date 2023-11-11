@@ -66,7 +66,17 @@ def set_project_template_dir(settings: str):
 
 def add_new_settings(settings: str, users: str, api_only: bool = False):
     new_settings_anchor = "from pathlib import Path"
-    new_settings = [f'AUTH_USER_MODEL = "{users}.UserAccount"', "SITE_ID = 1"]
+    api_base = "v1/" if api_only else "api/v1/"
+    new_settings = [
+        f'AUTH_USER_MODEL = "{users}.UserAccount"',
+        "SITE_ID = 1",
+        f'API_BASE = "{api_base}"',
+        "USER_DETAILS_PUBLIC = False",
+        'ACCOUNT_EMAIL_VERIFICATION = "mandatory"',
+        "ACCOUNT_EMAIL_REQUIRED = True",
+        'ACCOUNT_AUTHENTICATION_METHOD = "username_email"',
+        'EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"',
+    ]
     if not api_only:
         new_settings.append('LOGIN_REDIRECT_URL = "home"')
         new_settings.append('LOGOUT_REDIRECT_URL = "home"')

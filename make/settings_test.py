@@ -202,9 +202,38 @@ class TestAddNewSettings:
         actual = settings.add_new_settings(test_example, "users")
         assert 'AUTH_USER_MODEL = "users.UserAccount"' in actual
 
-    def testsiteid(self):
+    def test_siteid(self):
         actual = settings.add_new_settings(test_example, "users")
         assert "SITE_ID = 1" in actual
+
+    def test_api_base(self):
+        actual = settings.add_new_settings(test_example, "users")
+        assert 'API_BASE = "api/v1/"' in actual
+
+    def test_api_only_base(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert 'API_BASE = "v1/"' in actual
+
+    def test_user_details_public(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert "USER_DETAILS_PUBLIC = False" in actual
+
+    def test_email_verification(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert 'ACCOUNT_EMAIL_VERIFICATION = "mandatory"' in actual
+
+    def test_email_required(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert "ACCOUNT_EMAIL_REQUIRED = True" in actual
+
+    def test_authentication_method(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        assert 'ACCOUNT_AUTHENTICATION_METHOD = "username_email"' in actual
+
+    def test_email_backend(self):
+        actual = settings.add_new_settings(test_example, "users", api_only=True)
+        backend = "django.core.mail.backends.console.EmailBackend"
+        assert f'EMAIL_BACKEND = "{backend}"' in actual
 
     def test_login_redirect(self):
         actual = settings.add_new_settings(test_example, "users")
