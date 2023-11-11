@@ -113,7 +113,6 @@ def get_social_auth_providers():
         "Instagram": "instagram",
         "LinkedIn": "linkedin",
         "Patreon": "patreon",
-        "Pinterest": "pinterest",
         "Reddit": "reddit",
         "Slack": "slack",
         "Snapchat": "snap",
