@@ -311,3 +311,11 @@ class TestSocialAccountProviders:
         assert app["secret"] == 'os.environ.get("SLACK_SECRET")'
         assert app["key"] == 'os.environ.get("SLACK_KEY")'
         assert providers["slack"]["SCOPE"] == ["read"]
+
+    def test_snapchat(self):
+        providers = settings.get_social_auth_providers(["snap"])
+        app = providers["snap"]["APP"]
+        assert app["client_id"] == 'os.environ.get("SNAPCHAT_CLIENT_ID")'
+        assert app["secret"] == 'os.environ.get("SNAPCHAT_SECRET")'
+        assert app["key"] == 'os.environ.get("SNAPCHAT_KEY")'
+        assert providers["snap"]["SCOPE"] == ["read"]
