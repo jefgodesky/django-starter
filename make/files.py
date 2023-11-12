@@ -1,6 +1,7 @@
 import os
 import re
 
+import black
 import settings
 from django.core.management.utils import get_random_secret_key
 
@@ -157,6 +158,28 @@ def change_urls(project: str, api_only: bool = False):
     if not api_only:
         imports.append("from django.views.generic.base import TemplateView")
 
+    imports = sorted(imports + ["from django.conf import settings"]) + [
+        "from rest_framework import permissions",
+        "from drf_yasg.views import get_schema_view",
+        "from drf_yasg import openapi",
+    ]
+
+    variables = [
+        f'app_name = "{project}"',
+        "api = settings.API_BASE",
+    ]
+
+    schema_view = """schema_view = get_schema_view(
+    openapi.Info(
+        title="PROJECT API",
+        default_version="v1",
+        description="API for PROJECT",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)"""
+    schema_view = schema_view.replace("PROJECT", project)
+
     regex = r"urlpatterns = \[(.*?)]"
     search = re.search(regex, contents, flags=re.DOTALL | re.MULTILINE)
     urlpatterns_str = "" if search is None else search.group(1).strip()
@@ -169,14 +192,21 @@ def change_urls(project: str, api_only: bool = False):
         urlpatterns.append('path("", include("users.urls")),')
         urlpatterns.append('path("", include("django.contrib.auth.urls")),')
 
+    urlpatterns = urlpatterns + [
+        'path(f"{api}/doc<format>", schema_view.without_ui(cache_timeout=0), name="schema-json"),',  # noqa: E501
+        'path(f"{api}/doc/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),',  # noqa: E501
+        'path(f"{api}/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),',  # noqa: E501
+    ]
+
     urlpatterns = [f"    {pattern}" for pattern in urlpatterns]
 
     section_break = os.linesep * 2
     import_section = os.linesep.join(imports)
-    app_name_section = f'app_name = "{project}"'
+    var_section = os.linesep.join(variables)
     urlpatterns_section_inner = os.linesep.join(urlpatterns)
     urlpatterns_section = f"urlpatterns = [\n{urlpatterns_section_inner}\n]"
-    sections = [import_section, app_name_section, urlpatterns_section]
+    urlpatterns_section = black.format_str(urlpatterns_section, mode=black.FileMode())
+    sections = [import_section, var_section, schema_view, urlpatterns_section]
 
     with open(filename, "w") as file:
         file.write(section_break.join(sections) + os.linesep)

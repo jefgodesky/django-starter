@@ -1,5 +1,4 @@
 import os
-import re
 from unittest.mock import MagicMock, mock_open
 
 import files
@@ -263,81 +262,108 @@ class TestChangeScripts:
 
 
 class TestChangeURLs:
-    def test_preserve_imports(self, mock_file):
+    @pytest.fixture
+    def contents(self, mock_file):
         mock_file().read.return_value = urls_py_content
         files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert "from django.contrib import admin" in actual
+        return mock_file().write.call_args[0][0]
 
-    def test_import_include(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert "from django.urls import include, path" in actual
-
-    def test_import_template_view(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert "from django.views.generic.base import TemplateView" in actual
-
-    def test_skip_template_view(self, mock_file):
+    @pytest.fixture
+    def contents_api_only(self, mock_file):
         mock_file().read.return_value = urls_py_content
         files.change_urls("myproject", api_only=True)
-        actual = mock_file().write.call_args[0][0]
-        assert "from django.views.generic.base import TemplateView" not in actual
+        return mock_file().write.call_args[0][0]
 
-    def test_add_site_name(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert 'app_name = "myproject"' in actual
+    def test_preserve_imports(self, contents):
+        assert "from django.contrib import admin" in contents
 
-    def test_preserve_admin_path(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        regex = r"urlpatterns = \[(.*?)path\(\'admin\/\', admin\.site\.urls\),"
-        check = re.search(regex, actual, re.DOTALL)
-        assert check is not None
+    def test_import_include(self, contents):
+        assert "from django.urls import include, path" in contents
 
-    def test_skip_home(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject", api_only=True)
-        actual = mock_file().write.call_args[0][0]
+    def test_import_template_view(self, contents):
+        assert "from django.views.generic.base import TemplateView" in contents
+
+    def test_skip_template_view(self, contents_api_only):
+        statement = "from django.views.generic.base import TemplateView"
+        assert statement not in contents_api_only
+
+    def test_import_settings(self, contents):
+        assert "from django.conf import settings" in contents
+
+    def test_import_rest_framework(self, contents):
+        assert "from rest_framework import permissions" in contents
+
+    def test_import_drf_yasg_views(self, contents):
+        assert "from drf_yasg.views import get_schema_view" in contents
+
+    def test_import_drf_yasg(self, contents):
+        assert "from drf_yasg import openapi" in contents
+
+    def test_add_app_name(self, contents):
+        assert 'app_name = "myproject"' in contents
+
+    def test_add_api_variable(self, contents):
+        assert "api = settings.API_BASE" in contents
+
+    def test_add_schema_view(self, contents):
+        expected = """schema_view = get_schema_view(
+    openapi.Info(
+        title="myproject API",
+        default_version="v1",
+        description="API for myproject",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)"""
+        assert expected in contents
+
+    def test_preserve_admin_path(self, contents):
+        assert 'path("admin/", admin.site.urls),' in contents
+
+    def test_skip_home(self, contents_api_only):
         home = 'path("", TemplateView.as_view(template_name="home.html"), name="home"),'
-        assert home not in actual
+        assert home not in contents_api_only
 
-    def test_add_home(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
+    def test_add_home(self, contents):
         home = 'path("", TemplateView.as_view(template_name="home.html"), name="home"),'
-        assert home in actual
+        assert home in contents
 
-    def test_skip_users_urls(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject", api_only=True)
-        actual = mock_file().write.call_args[0][0]
-        assert 'path("", include("users.urls")),' not in actual
+    def test_skip_users_urls(self, contents_api_only):
+        assert 'path("", include("users.urls")),' not in contents_api_only
 
-    def test_add_users_urls(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert 'path("", include("users.urls")),' in actual
+    def test_add_users_urls(self, contents):
+        assert 'path("", include("users.urls")),' in contents
 
-    def test_skip_django_auth_urls(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject", api_only=True)
-        actual = mock_file().write.call_args[0][0]
-        assert 'path("", include("django.contrib.auth.urls")),' not in actual
+    def test_skip_django_auth_urls(self, contents_api_only):
+        path = 'path("", include("django.contrib.auth.urls")),'
+        assert path not in contents_api_only
 
-    def test_add_django_auth_urls(self, mock_file):
-        mock_file().read.return_value = urls_py_content
-        files.change_urls("myproject")
-        actual = mock_file().write.call_args[0][0]
-        assert 'path("", include("django.contrib.auth.urls")),' in actual
+    def test_add_django_auth_urls(self, contents):
+        assert 'path("", include("django.contrib.auth.urls")),' in contents
+
+    def test_schema_json(self, contents):
+        expected = """path(
+        f"{api}/doc<format>",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),"""
+        assert expected in contents
+
+    def test_schema_swagger_ui(self, contents):
+        expected = """path(
+        f"{api}/doc/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),"""
+        assert expected in contents
+
+    def test_schema_redoc(self, contents):
+        expected = """path(
+        f"{api}/redoc/",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
+    ),"""
+        assert expected in contents
 
 
 class TestChangeSettings:
