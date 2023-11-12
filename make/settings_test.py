@@ -317,149 +317,145 @@ def test_remove_password_validators():
     assert "TEMPLATES = [" in actual
 
 
-class TestSocialAccountProviders:
+class TestAddSocialAuthProviders:
     def test_apple(self):
-        providers = settings.get_social_auth_providers(["apple"])
-        app = providers["apple"]["APP"]
-        certkey = app["settings"]["certificate_key"]
-        assert app["client_id"] == 'os.environ.get("APPLE_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("APPLE_SECRET")'
-        assert app["key"] == 'os.environ.get("APPLE_KEY")'
-        assert certkey == 'os.environ.get("APPLE_CERTIFICATE_KEY")'
-        assert providers["apple"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["apple"])
+        assert '"apple": {' in actual
+        assert '"client_id": os.environ.get("APPLE_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("APPLE_SECRET"),' in actual
+        assert '"key": os.environ.get("APPLE_KEY"),' in actual
+        assert '"certificate_key": os.environ.get("APPLE_CERTIFICATE_KEY")' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_auth0(self):
-        providers = settings.get_social_auth_providers(["auth0"])
-        app = providers["auth0"]["APP"]
-        assert app["client_id"] == 'os.environ.get("AUTH0_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("AUTH0_SECRET")'
-        assert app["key"] == 'os.environ.get("AUTH0_KEY")'
-        assert providers["auth0"]["AUTH0_URL"] == 'os.environ.get("AUTH0_URL")'
-        assert providers["auth0"]["OAUTH_PKCE_ENABLED"] is True
-        assert providers["auth0"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["auth0"])
+        assert '"auth0": {' in actual
+        assert '"client_id": os.environ.get("AUTH0_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("AUTH0_SECRET"),' in actual
+        assert '"key": os.environ.get("AUTH0_KEY"),' in actual
+        assert '"AUTH0_URL": os.environ.get("AUTH0_URL"),' in actual
+        assert '"OAUTH_PKCE_ENABLED": True,' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_digitalocean(self):
-        providers = settings.get_social_auth_providers(["digitalocean"])
-        app = providers["digitalocean"]["APP"]
-        assert app["client_id"] == 'os.environ.get("DIGITALOCEAN_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("DIGITALOCEAN_SECRET")'
-        assert app["key"] == 'os.environ.get("DIGITALOCEAN_KEY")'
-        assert providers["digitalocean"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["digitalocean"])
+        assert '"digitalocean": {' in actual
+        assert '"client_id": os.environ.get("DIGITALOCEAN_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("DIGITALOCEAN_SECRET"),' in actual
+        assert '"key": os.environ.get("DIGITALOCEAN_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_discord(self):
-        providers = settings.get_social_auth_providers(["discord"])
-        app = providers["discord"]["APP"]
-        assert app["client_id"] == 'os.environ.get("DISCORD_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("DISCORD_SECRET")'
-        assert app["key"] == 'os.environ.get("DISCORD_KEY")'
-        assert providers["discord"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["discord"])
+        assert '"discord": {' in actual
+        assert '"client_id": os.environ.get("DISCORD_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("DISCORD_SECRET"),' in actual
+        assert '"key": os.environ.get("DISCORD_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_facebook(self):
-        providers = settings.get_social_auth_providers(["facebook"])
-        fb = providers["facebook"]
-        app = fb["APP"]
-        assert fb["METHOD"] == "oauth2"
-        assert fb["INIT_PARAMS"]["cookie"] is True
-        assert "id" in fb["FIELDS"]
-        assert "first_name" in fb["FIELDS"]
-        assert "last_name" in fb["FIELDS"]
-        assert "middle_name" in fb["FIELDS"]
-        assert "name" in fb["FIELDS"]
-        assert "name_format" in fb["FIELDS"]
-        assert "picture" in fb["FIELDS"]
-        assert "short_name" in fb["FIELDS"]
-        assert app["client_id"] == 'os.environ.get("FACEBOOK_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("FACEBOOK_SECRET")'
-        assert app["key"] == 'os.environ.get("FACEBOOK_KEY")'
-        assert providers["facebook"]["SCOPE"] == ["email", "public_profile"]
+        actual = settings.add_social_auth_providers(test_example, ["facebook"])
+        assert '"facebook": {' in actual
+        assert '"client_id": os.environ.get("FACEBOOK_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("FACEBOOK_SECRET"),' in actual
+        assert '"key": os.environ.get("FACEBOOK_KEY"),' in actual
+        assert '"METHOD": "oauth2",' in actual
+        assert '"INIT_PARAMS": {"cookie": True},' in actual
+        assert '"FIELDS": [' in actual
+        assert '"id",' in actual
+        assert '"first_name",' in actual
+        assert '"last_name",' in actual
+        assert '"middle_name",' in actual
+        assert '"name",' in actual
+        assert '"name_format",' in actual
+        assert '"picture",' in actual
+        assert '"short_name",' in actual
+        assert '"SCOPE": ["email", "public_profile"],' in actual
 
     def test_github(self):
-        providers = settings.get_social_auth_providers(["github"])
-        app = providers["github"]["APP"]
-        assert app["client_id"] == 'os.environ.get("GITHUB_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("GITHUB_SECRET")'
-        assert app["key"] == 'os.environ.get("GITHUB_KEY")'
-        assert providers["github"]["SCOPE"] == ["user"]
+        actual = settings.add_social_auth_providers(test_example, ["github"])
+        assert '"github": {' in actual
+        assert '"client_id": os.environ.get("GITHUB_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("GITHUB_SECRET"),' in actual
+        assert '"key": os.environ.get("GITHUB_KEY"),' in actual
+        assert '"SCOPE": ["user"],' in actual
 
     def test_google(self):
-        providers = settings.get_social_auth_providers(["google"])
-        app = providers["google"]["APP"]
-        assert providers["google"]["AUTH_PARAMS"]["access_type"] == "online"
-        assert providers["google"]["OAUTH_PKCE_ENABLED"] is True
-        assert app["client_id"] == 'os.environ.get("GOOGLE_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("GOOGLE_SECRET")'
-        assert app["key"] == 'os.environ.get("GOOGLE_KEY")'
-        assert providers["google"]["SCOPE"] == ["profile", "email"]
+        actual = settings.add_social_auth_providers(test_example, ["google"])
+        assert '"google": {' in actual
+        assert '"client_id": os.environ.get("GOOGLE_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("GOOGLE_SECRET"),' in actual
+        assert '"key": os.environ.get("GOOGLE_KEY"),' in actual
+        assert '"AUTH_PARAMS": {"access_type": "online"},' in actual
+        assert '"OAUTH_PKCE_ENABLED": True,' in actual
+        assert '"SCOPE": ["profile", "email"],' in actual
 
     def test_instagram(self):
-        providers = settings.get_social_auth_providers(["instagram"])
-        app = providers["instagram"]["APP"]
-        assert app["client_id"] == 'os.environ.get("INSTAGRAM_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("INSTAGRAM_SECRET")'
-        assert app["key"] == 'os.environ.get("INSTAGRAM_KEY")'
-        assert providers["instagram"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["instagram"])
+        assert '"instagram": {' in actual
+        assert '"client_id": os.environ.get("INSTAGRAM_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("INSTAGRAM_SECRET"),' in actual
+        assert '"key": os.environ.get("INSTAGRAM_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_linkedin(self):
-        providers = settings.get_social_auth_providers(["linkedin"])
-        app = providers["linkedin"]["APP"]
-        assert "id" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert "first-name" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert "last-name" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert "email-address" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert "picture-url" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert "public-profile-url" in providers["linkedin"]["PROFILE_FIELDS"]
-        assert app["client_id"] == 'os.environ.get("LINKEDIN_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("LINKEDIN_SECRET")'
-        assert app["key"] == 'os.environ.get("LINKEDIN_KEY")'
-        assert providers["linkedin"]["SCOPE"] == ["r_basicprofile", "r_emailaddress"]
+        actual = settings.add_social_auth_providers(test_example, ["linkedin"])
+        assert '"linkedin": {' in actual
+        assert '"client_id": os.environ.get("LINKEDIN_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("LINKEDIN_SECRET"),' in actual
+        assert '"key": os.environ.get("LINKEDIN_KEY"),' in actual
+        assert '"PROFILE_FIELDS": [' in actual
+        assert '"id",' in actual
+        assert '"first-name",' in actual
+        assert '"last-name",' in actual
+        assert '"email-address",' in actual
+        assert '"picture-url",' in actual
+        assert '"public-profile-url",' in actual
+        assert '"SCOPE": ["r_basicprofile", "r_emailaddress"],' in actual
 
     def test_patreon(self):
-        providers = settings.get_social_auth_providers(["patreon"])
-        app = providers["patreon"]["APP"]
-        assert providers["patreon"]["VERSION"] == "v2"
-        assert app["client_id"] == 'os.environ.get("PATREON_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("PATREON_SECRET")'
-        assert app["key"] == 'os.environ.get("PATREON_KEY")'
-        assert providers["patreon"]["SCOPE"] == [
-            "identity",
-            "identity[email]",
-            "campaigns",
-            "campaigns.members",
-        ]
+        actual = settings.add_social_auth_providers(test_example, ["patreon"])
+        assert '"patreon": {' in actual
+        assert '"client_id": os.environ.get("PATREON_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("PATREON_SECRET"),' in actual
+        assert '"key": os.environ.get("PATREON_KEY"),' in actual
+        assert '"VERSION": "v2",' in actual
+        assert '"SCOPE": [' in actual
+        assert '"identity"' in actual
+        assert '"identity[email]"' in actual
+        assert '"campaigns"' in actual
+        assert '"campaigns.members"' in actual
 
     def test_reddit(self):
-        providers = settings.get_social_auth_providers(["reddit"])
-        app = providers["reddit"]["APP"]
-        useragent = (
-            '"django:myappid:1.0 (by /u/" + os.environ.get("REDDIT_USERNAME") + ")"'
-        )
-        assert providers["reddit"]["AUTH_PARAMS"]["duration"] == "permanent"
-        assert providers["reddit"]["USER_AGENT"] == useragent
-        assert app["client_id"] == 'os.environ.get("REDDIT_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("REDDIT_SECRET")'
-        assert app["key"] == 'os.environ.get("REDDIT_KEY")'
-        assert providers["reddit"]["SCOPE"] == ["identity"]
+        actual = settings.add_social_auth_providers(test_example, ["reddit"])
+        assert '"reddit": {' in actual
+        assert '"client_id": os.environ.get("REDDIT_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("REDDIT_SECRET"),' in actual
+        assert '"key": os.environ.get("REDDIT_KEY"),' in actual
+        assert '"SCOPE": ["identity"],' in actual
+        assert '"AUTH_PARAMS": {"duration": "permanent"},' in actual
+        assert '"USER_AGENT": "django:myappid:1.0 (by /u/"' in actual
 
     def test_slack(self):
-        providers = settings.get_social_auth_providers(["slack"])
-        app = providers["slack"]["APP"]
-        assert app["client_id"] == 'os.environ.get("SLACK_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("SLACK_SECRET")'
-        assert app["key"] == 'os.environ.get("SLACK_KEY")'
-        assert providers["slack"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["slack"])
+        assert '"slack": {' in actual
+        assert '"client_id": os.environ.get("SLACK_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("SLACK_SECRET"),' in actual
+        assert '"key": os.environ.get("SLACK_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_snapchat(self):
-        providers = settings.get_social_auth_providers(["snap"])
-        app = providers["snap"]["APP"]
-        assert app["client_id"] == 'os.environ.get("SNAPCHAT_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("SNAPCHAT_SECRET")'
-        assert app["key"] == 'os.environ.get("SNAPCHAT_KEY")'
-        assert providers["snap"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["snap"])
+        assert '"snap": {' in actual
+        assert '"client_id": os.environ.get("SNAPCHAT_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("SNAPCHAT_SECRET"),' in actual
+        assert '"key": os.environ.get("SNAPCHAT_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual
 
     def test_twitch(self):
-        providers = settings.get_social_auth_providers(["twitch"])
-        app = providers["twitch"]["APP"]
-        assert app["client_id"] == 'os.environ.get("TWITCH_CLIENT_ID")'
-        assert app["secret"] == 'os.environ.get("TWITCH_SECRET")'
-        assert app["key"] == 'os.environ.get("TWITCH_KEY")'
-        assert providers["twitch"]["SCOPE"] == ["read"]
+        actual = settings.add_social_auth_providers(test_example, ["twitch"])
+        assert '"twitch": {' in actual
+        assert '"client_id": os.environ.get("TWITCH_CLIENT_ID"),' in actual
+        assert '"secret": os.environ.get("TWITCH_SECRET"),' in actual
+        assert '"key": os.environ.get("TWITCH_KEY"),' in actual
+        assert '"SCOPE": ["read"],' in actual

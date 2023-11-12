@@ -1,6 +1,8 @@
 import os
 import re
 
+import black
+
 
 def add_installed_apps(settings: str, users: str, providers=None):
     apps_to_mix = ['"django.contrib.sites"']
@@ -154,78 +156,73 @@ def remove_password_validators(settings: str):
     return re.sub(pattern, "AUTH_PASSWORD_VALIDATORS = []", settings)
 
 
-def get_social_auth_providers(providers):
-    config = {}
+def add_social_auth_providers(settings: str, providers: dict):
+    addendum = "SOCIALACCOUNT_PROVIDERS = {" + os.linesep
     for provider in providers:
         prefix = "SNAPCHAT" if provider == "snap" else provider.upper()
-        config[provider] = {
-            "APP": {
-                "client_id": f'os.environ.get("{prefix}_CLIENT_ID")',
-                "secret": f'os.environ.get("{prefix}_SECRET")',
-                "key": f'os.environ.get("{prefix}_KEY")',
-            },
-            "SCOPE": ["read"],
+        patreon_scope = [
+            '"identity"',
+            '"identity[email]"',
+            '"campaigns"',
+            '"campaigns.members"',
+        ]
+        scopes = {
+            "facebook": '"email", "public_profile"',
+            "github": '"user"',
+            "google": '"profile", "email"',
+            "linkedin": '"r_basicprofile", "r_emailaddress"',
+            "patreon": " ".join(patreon_scope),
+            "reddit": '"identity"',
         }
 
-        if provider == "apple":
-            config[provider]["APP"]["settings"] = {
-                "certificate_key": f'os.environ.get("{prefix}_CERTIFICATE_KEY")'
-            }
+        scope = scopes[provider] if provider in scopes.keys() else '"read"'
+        addendum += f'"{provider}": {{'
 
         if provider == "auth0":
-            config[provider]["AUTH0_URL"] = f'os.environ.get("{prefix}_URL")'
-            config[provider]["OAUTH_PKCE_ENABLED"] = True
-
-        if provider == "digitalocean":
-            config[provider]["SCOPE"] = ["read"]
+            addendum += f'"AUTH0_URL": os.environ.get("{prefix}_URL"),'
+            addendum += '"OAUTH_PKCE_ENABLED": True,'
 
         if provider == "facebook":
-            fields = [
-                "id",
-                "first_name",
-                "last_name",
-                "middle_name",
-                "name",
-                "name_format",
-                "picture",
-                "short_name",
-            ]
-            config[provider]["METHOD"] = "oauth2"
-            config[provider]["INIT_PARAMS"] = {"cookie": True}
-            config[provider]["FIELDS"] = fields
-            config[provider]["SCOPE"] = ["email", "public_profile"]
-
-        if provider == "github":
-            config[provider]["SCOPE"] = ["user"]
+            addendum += '"METHOD": "oauth2",'
+            addendum += '"INIT_PARAMS": {"cookie": True},'
+            addendum += '"FIELDS": ["id", "first_name", "last_name", "middle_name", \
+                        "name", "name_format", "picture", "short_name"],'
 
         if provider == "google":
-            config[provider]["AUTH_PARAMS"] = {"access_type": "online"}
-            config[provider]["OAUTH_PKCE_ENABLED"] = True
-            config[provider]["SCOPE"] = ["profile", "email"]
+            addendum += '"AUTH_PARAMS": {"access_type": "online"},'
+            addendum += '"OAUTH_PKCE_ENABLED": True,'
 
         if provider == "linkedin":
-            fields = [
-                "id",
-                "first-name",
-                "last-name",
-                "email-address",
-                "picture-url",
-                "public-profile-url",
-            ]
-            config[provider]["PROFILE_FIELDS"] = fields
-            config[provider]["SCOPE"] = ["r_basicprofile", "r_emailaddress"]
+            addendum += (
+                '"PROFILE_FIELDS": ["id", "first-name", "last-name",'
+                '"email-address", "picture-url", "public-profile-url"],'
+            )
 
         if provider == "patreon":
-            scope = ["identity", "identity[email]", "campaigns", "campaigns.members"]
-            config[provider]["VERSION"] = "v2"
-            config[provider]["SCOPE"] = scope
+            addendum += '"VERSION": "v2",'
 
         if provider == "reddit":
-            useragent = (
-                '"django:myappid:1.0 (by /u/" + os.environ.get("REDDIT_USERNAME") + ")"'
+            addendum += '"AUTH_PARAMS": {"duration": "permanent"},'
+            addendum += (
+                '"USER_AGENT": "django:myappid:1.0 (by /u/" /'
+                '+ os.environ.get("REDDIT_USERNAME") + ")",'
             )
-            config[provider]["AUTH_PARAMS"] = {"duration": "permanent"}
-            config[provider]["USER_AGENT"] = useragent
-            config[provider]["SCOPE"] = ["identity"]
 
-    return config
+        addendum += '"APP": {'
+        addendum += f'"client_id": os.environ.get("{prefix}_CLIENT_ID"),'
+        addendum += f'"secret": os.environ.get("{prefix}_SECRET"),'
+        addendum += f'"key": os.environ.get("{prefix}_KEY"),'
+
+        if provider == "apple":
+            addendum += '"settings": {'
+            addendum += f'"certificate_key": os.environ.get("{prefix}_CERTIFICATE_KEY")'
+            addendum += "},"
+
+        addendum += "},"
+        addendum += f'"SCOPE": [{scope}]'
+        addendum += "},"
+    addendum += "}"
+
+    return black.format_str(
+        settings + os.linesep + os.linesep + addendum, mode=black.FileMode()
+    )
