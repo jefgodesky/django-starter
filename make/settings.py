@@ -19,9 +19,12 @@ def add_installed_apps(settings: str, users: str, providers=None):
         for provider in providers:
             apps_to_add.append(f'"allauth.socialaccount.providers.{provider}"')
 
-    apps_to_add.append('"dj_rest_auth"')
-    apps_to_add.append('"dj_rest_auth.registration"')
-    apps_to_add.append(f'"{users}"')
+    apps_to_add = apps_to_add + [
+        '"dj_rest_auth"',
+        '"dj_rest_auth.registration"',
+        '"drf_yasg"',
+        f'"{users}"',
+    ]
 
     match = re.search(r"INSTALLED_APPS = \[(.*?)]", settings, flags=re.DOTALL)
     if not match:

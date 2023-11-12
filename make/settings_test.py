@@ -157,6 +157,10 @@ class TestAddInstalledApps:
         actual = settings.add_installed_apps(test_example, "users")
         assert '"dj_rest_auth.registration",' in actual
 
+    def test_drf_yasg(self):
+        actual = settings.add_installed_apps(test_example, "users")
+        assert '"drf_yasg",' in actual
+
     def test_adds_users(self):
         actual = settings.add_installed_apps(test_example, "users")
         assert '"users",' in actual
