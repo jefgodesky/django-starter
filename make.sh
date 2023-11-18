@@ -12,7 +12,8 @@ deactivate
 clear
 rm -Rf src/env
 rm -Rf make
+rm -Rf next
 rm -f cd.yml
-echo "${bold}Your Django project is ready to go!${normal}"
-echo "Visit https://github.com/jefgodesky/django-starter/wiki for ideas on next steps."
+echo "${bold}Your Django project is ready!${normal}"
+echo "See NEXT.md for next steps."
 rm -- "$0"
