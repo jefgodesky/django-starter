@@ -593,16 +593,18 @@ class TestMakeNext:
         mock_file().read.side_effect = ["One", "Two", "Three", "Four", "Five"]
         return mock_file
 
-    def provider_read(self, provider, mock):
+    @staticmethod
+    def provider_read(provider, mock):
         files.make_next([provider])
         args = mock.call_args_list[2]
         assert args[0] == (f"./next/{provider}.md",)
 
-    def provider_write(self, provider, mock):
+    @staticmethod
+    def provider_write(provider, mock):
         files.make_next([provider])
         args = mock.call_args_list[4]
         text = mock().write.call_args[0][0]
-        assert args[0] == ("./next.md", "w")
+        assert args[0] == ("./NEXT.md", "w")
         assert "Two" in text
 
     def test_read_1(self, mock):
@@ -614,7 +616,7 @@ class TestMakeNext:
         files.make_next([])
         args = mock.call_args_list[3]
         text = mock().write.call_args[0][0]
-        assert args[0] == ("./next.md", "w")
+        assert args[0] == ("./NEXT.md", "w")
         assert "One" in text
 
     def test_read_apple(self, mock):
@@ -710,5 +712,5 @@ class TestMakeNext:
         files.make_next([])
         args = mock.call_args_list[3]
         text = mock().write.call_args[0][0]
-        assert args[0] == ("./next.md", "w")
+        assert args[0] == ("./NEXT.md", "w")
         assert "Two" in text

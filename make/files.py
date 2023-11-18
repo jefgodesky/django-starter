@@ -295,5 +295,5 @@ def make_next(providers: list):
     with open("./next/2.md") as file:
         fragments.append(file.read())
 
-    with open("./next.md", "w") as file:
+    with open("./NEXT.md", "w") as file:
         file.write(os.linesep.join(fragments))
