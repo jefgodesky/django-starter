@@ -87,23 +87,10 @@ def change_pytest_ini(project: str):
     replace_in_file("src/.pytest.ini", replacements, dest="src/pytest.ini")
 
 
-def make_env(
-    env="prod",
-    db="db",
-    db_user="db_user",
-    db_password="db_password",
-    secret_key=get_random_secret_key(),
-    debug=0,
-):
+def make_env(env="prod", secret_key=get_random_secret_key(), debug=0):
     replacements = [
         ("DEBUG=1", f"DEBUG={debug}"),
         ("SECRET_KEY=your_secret_key_here", f"SECRET_KEY={secret_key}"),
-        ("SQL_DATABASE=myproject_db", f"SQL_DATABASE={db}"),
-        ("SQL_USER=django_db_user", f"SQL_USER={db_user}"),
-        ("SQL_PASSWORD=password", f"SQL_PASSWORD={db_password}"),
-        ("POSTGRES_DB=myproject_db", f"POSTGRES_DB={db}"),
-        ("POSTGRES_USER=django_db_user", f"POSTGRES_USER={db_user}"),
-        ("POSTGRES_PASSWORD=password", f"POSTGRES_PASSWORD={db_password}"),
     ]
 
     replace_in_file("docker/.env.example", replacements, dest=f"docker/.env.{env}")
