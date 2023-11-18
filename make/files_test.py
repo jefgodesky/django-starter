@@ -585,3 +585,130 @@ def test_add_provider_env(mock_file):
     assert "TWITCH_CLIENT_ID=" in actual
     assert "TWITCH_SECRET=" in actual
     assert "TWITCH_KEY=" in actual
+
+
+class TestMakeNext:
+    @pytest.fixture
+    def mock(self, mock_file):
+        mock_file().read.side_effect = ["One", "Two", "Three", "Four", "Five"]
+        return mock_file
+
+    def provider_read(self, provider, mock):
+        files.make_next([provider])
+        args = mock.call_args_list[2]
+        assert args[0] == (f"./next/{provider}.md",)
+
+    def provider_write(self, provider, mock):
+        files.make_next([provider])
+        args = mock.call_args_list[4]
+        text = mock().write.call_args[0][0]
+        assert args[0] == ("./next.md", "w")
+        assert "Two" in text
+
+    def test_read_1(self, mock):
+        files.make_next([])
+        args = mock.call_args_list[1]
+        assert args[0] == ("./next/1.md",)
+
+    def test_write_1(self, mock):
+        files.make_next([])
+        args = mock.call_args_list[3]
+        text = mock().write.call_args[0][0]
+        assert args[0] == ("./next.md", "w")
+        assert "One" in text
+
+    def test_read_apple(self, mock):
+        self.provider_read("apple", mock)
+
+    def test_write_apple(self, mock):
+        self.provider_write("apple", mock)
+
+    def test_read_auth0(self, mock):
+        self.provider_read("auth0", mock)
+
+    def test_write_auth0(self, mock):
+        self.provider_write("auth0", mock)
+
+    def test_read_digitalocean(self, mock):
+        self.provider_read("digitalocean", mock)
+
+    def test_write_digitalocean(self, mock):
+        self.provider_write("digitalocean", mock)
+
+    def test_read_discord(self, mock):
+        self.provider_read("discord", mock)
+
+    def test_write_discord(self, mock):
+        self.provider_write("discord", mock)
+
+    def test_read_facebook(self, mock):
+        self.provider_read("facebook", mock)
+
+    def test_write_facebook(self, mock):
+        self.provider_write("facebook", mock)
+
+    def test_read_github(self, mock):
+        self.provider_read("github", mock)
+
+    def test_write_github(self, mock):
+        self.provider_write("github", mock)
+
+    def test_read_google(self, mock):
+        self.provider_read("google", mock)
+
+    def test_write_google(self, mock):
+        self.provider_write("google", mock)
+
+    def test_read_instagram(self, mock):
+        self.provider_read("instagram", mock)
+
+    def test_write_instagram(self, mock):
+        self.provider_write("instagram", mock)
+
+    def test_read_linkedin(self, mock):
+        self.provider_read("linkedin", mock)
+
+    def test_write_linkedin(self, mock):
+        self.provider_write("linkedin", mock)
+
+    def test_read_patreon(self, mock):
+        self.provider_read("patreon", mock)
+
+    def test_write_patreon(self, mock):
+        self.provider_write("patreon", mock)
+
+    def test_read_reddit(self, mock):
+        self.provider_read("reddit", mock)
+
+    def test_write_reddit(self, mock):
+        self.provider_write("reddit", mock)
+
+    def test_read_slack(self, mock):
+        self.provider_read("slack", mock)
+
+    def test_write_slack(self, mock):
+        self.provider_write("slack", mock)
+
+    def test_read_snap(self, mock):
+        self.provider_read("snap", mock)
+
+    def test_write_snap(self, mock):
+        self.provider_write("snap", mock)
+
+    def test_read_twitch(self, mock):
+        self.provider_read("twitch", mock)
+
+    def test_write_twitch(self, mock):
+        self.provider_write("twitch", mock)
+
+    def test_read_2(self, mock):
+        files.make_next([])
+        args = mock.call_args_list[2]
+        assert args[0] == ("./next/2.md",)
+
+    def test_write_2(self, mock):
+        files.make_next([])
+        args = mock.call_args_list[3]
+        text = mock().write.call_args[0][0]
+        assert args[0] == ("./next.md", "w")
+        assert "Two" in text

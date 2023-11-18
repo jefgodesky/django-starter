@@ -280,3 +280,20 @@ def add_provider_env(providers, env="prod"):
 
     with open(filename, "w") as file:
         file.write(contents)
+
+
+def make_next(providers: list):
+    fragments = []
+
+    with open("./next/1.md") as file:
+        fragments.append(file.read())
+
+    for provider in providers:
+        with open(f"./next/{provider}.md") as file:
+            fragments.append(file.read())
+
+    with open("./next/2.md") as file:
+        fragments.append(file.read())
+
+    with open("./next.md", "w") as file:
+        file.write(os.linesep.join(fragments))
