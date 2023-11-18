@@ -199,7 +199,7 @@ def change_urls(project: str, api_only: bool = False):
         file.write(section_break.join(sections) + os.linesep)
 
 
-def change_settings(filename: str, users: str, api_only: bool = False):
+def change_settings(filename: str, users: str, providers: list, api_only: bool = False):
     with open(filename) as file:
         contents = file.read()
 
@@ -212,6 +212,9 @@ def change_settings(filename: str, users: str, api_only: bool = False):
     contents = settings.set_debug(contents)
     contents = settings.set_allowed_hosts(contents)
     contents = settings.add_prod_rest_framework_renderer(contents)
+    contents = settings.add_authentication_backends(contents)
+    contents = settings.remove_password_validators(contents)
+    contents = settings.add_social_auth_providers(contents, providers)
 
     with open(filename, "w") as file:
         file.write(contents)
