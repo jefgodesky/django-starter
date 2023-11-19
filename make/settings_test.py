@@ -170,7 +170,8 @@ class TestChangeDatabaseSettings:
     @pytest.fixture
     def setup(self):
         actual = settings.change_database_settings(test_example)
-        expected = """if TESTING:
+        expected = """
+if TESTING:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",

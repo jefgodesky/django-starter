@@ -64,7 +64,7 @@ else:
     }
 """
 
-    return settings.replace(match_databases.group(0), f"DATABASES = {databases}")
+    return settings.replace(match_databases.group(0), databases)
 
 
 def set_project_template_dir(settings: str):
