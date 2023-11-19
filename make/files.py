@@ -221,6 +221,10 @@ def change_settings(filename: str, users: str, providers: list, api_only: bool =
 
 
 def copy_files(project: str, users: str, api_only: bool = False):
+    directories = [f"./src/{project}/templates", f"./src/{users}/templates"]
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+
     files = {
         "make/.conftest.py": "./src/conftest.py",
         "make/test.sh": "./src/test.sh",
