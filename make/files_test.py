@@ -356,14 +356,14 @@ class TestChangeURLs:
 class TestChangeSettings:
     def test_read_file(self, mock_file):
         mock_file().read.return_value = ""
-        files.change_settings("settings.py", "users")
+        files.change_settings("settings.py", "users", [])
         args = mock_file.call_args_list[1][0]
         assert args[0] == "settings.py"
         assert len(args) == 1
 
     def test_write_file(self, mock_file):
         mock_file().read.return_value = ""
-        files.change_settings("settings.py", "users")
+        files.change_settings("settings.py", "users", [])
         args = mock_file.call_args_list[2][0]
         assert args[0] == "settings.py"
         assert args[1] == "w"
